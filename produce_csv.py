@@ -169,4 +169,7 @@ Script_owner = np.full((file_numbers,1),users[username])
 df = pd.DataFrame(np.hstack([Lot,Wafer_name,Mask_name,TestSite,Name,Date,Script_id,Script_version,Script_owner
                              ,Operator,row,column,Error_flag,Error_dsc,Analysis_WL,R_max_Ref,Max_TR_ref,R_square_IV
                              ,I_n_1V,I_p_1V]),columns=name)
-df.to_csv('PE02_LMZ_excel_data.csv',index=False)
+# res라는 폴더가 없다면 폴더를 만들고 그 안에 csv 파일 생성
+if not os.path.exists('res'):
+    os.makedirs('res')
+df.to_csv(os.path.join('res','PE02_LMZ_excel_data.csv'),index=False)
