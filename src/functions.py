@@ -1,7 +1,14 @@
 # 라이브러리 import
+import os
 with open('library.txt','r') as f:
     for library in f:
         exec(library)
+
+def fit_data(X,Y,N):
+    coef = np.polyfit(X, Y, N)
+    func = np.poly1d(coef)
+    fit_data = func(X)
+    return fit_data
 
 def R_square(X,Y,Y_reg): # R square 값을 계산하는 함수
     Y_mean=sum(Y)/Y.size # 전류의 평균값
@@ -12,7 +19,7 @@ def R_square(X,Y,Y_reg): # R square 값을 계산하는 함수
 
 def Best_fit_R(X,Y): # 가장 R_sqaure가 1에 가까운 R_square 값을 반환하는 함수
     Rs = []
-    for i in range(1,13):
+    for i in range(1,11):
         coef = np.polyfit(X,Y,i)
         func = np.poly1d(coef)
         fitted_data = func(X)
@@ -43,3 +50,23 @@ def shockely_diode_IV_fit_R(V,I):
     fit_data = func(V[:10])
     fit_data = np.append(fit_data, result.best_fit)
     return float(str(R_square(V,I,fit_data))[:9])
+
+def Ref_fitted_data(X,Y): # 가장 R_square가 클 때의 fitting data를 반환하는 함수
+    Rs = []
+    for i in range(1,11):
+        coef = np.polyfit(X,Y,i)
+        func = np.poly1d(coef)
+        fitted_data = func(X)
+        Rs.append(R_square(X,Y,fitted_data))
+    max_degree = Rs.index(max(Rs))+1
+    return fit_data(X,Y,max_degree)
+
+def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반환하는 함수
+    Rs = []
+    for i in range(1, 11):
+        coef = np.polyfit(X, Y, i)
+        func = np.poly1d(coef)
+        fitted_data = func(X)
+        Rs.append(R_square(X, Y, fitted_data))
+    max_degree = Rs.index(max(Rs)) + 1
+    return np.poly1d(np.polyfit(X,Y,max_degree))
