@@ -6,10 +6,10 @@ with open('library.txt', 'r') as f:
 import functions as func
 
 def IV_graph_plot(X, Y, Z):
-    for file_name in os.listdir(os.path.join('../data_file', X, Y)):
+    for file_name in os.listdir(os.path.join('../dat', X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            print(os.path.join('../data_file',X, Y, file_name))
-            tree = elemTree.parse(os.path.join('../data_file',X, Y, file_name))
+            print(os.path.join('../dat',X, Y, file_name))
+            tree = elemTree.parse(os.path.join('../dat',X, Y, file_name))
             root = tree.getroot()
         else:
             continue
@@ -55,10 +55,10 @@ def IV_graph_plot(X, Y, Z):
 IV_graph_plot('D07', '20190715_190855', '(-1,-1)')
 
 def transmission_spectra(X,Y,Z):
-    for file_name in os.listdir(os.path.join('../data_file', X, Y)):
+    for file_name in os.listdir(os.path.join('../dat', X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            print(os.path.join('../data_file',X, Y, file_name))
-            tree = elemTree.parse(os.path.join('../data_file',X, Y, file_name))
+            print(os.path.join('../dat',X, Y, file_name))
+            tree = elemTree.parse(os.path.join('../dat',X, Y, file_name))
             root = tree.getroot()
         else:
             continue
@@ -98,10 +98,10 @@ def transmission_spectra(X,Y,Z):
 transmission_spectra('D07', '20190715_190855', '(-1,-1)')
 
 def transmission_rsquare(X,Y,Z):
-    for file_name in os.listdir(os.path.join('../data_file', X, Y)):
+    for file_name in os.listdir(os.path.join('../dat', X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            print(os.path.join('../data_file',X, Y, file_name))
-            tree = elemTree.parse(os.path.join('../data_file',X, Y, file_name))
+            print(os.path.join('../dat',X, Y, file_name))
+            tree = elemTree.parse(os.path.join('../dat',X, Y, file_name))
             root = tree.getroot()
         else:
             continue
