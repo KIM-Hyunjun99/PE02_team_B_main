@@ -7,6 +7,7 @@ from lmfit import Model
 import warnings
 import pandas as pd
 import graph_individual as gi
+import produce_csv as pc
 
 def graph(x):
     insert = x
@@ -24,6 +25,7 @@ def graph(x):
     if 'csv_file' in output_elements:
         graph_elements = output_elements.pop()
         k = len(graph_elements)
+        pc.create_csv()
     else:
         graph_elements = output_elements
         k = len(graph_elements)
