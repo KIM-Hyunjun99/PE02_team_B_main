@@ -3,6 +3,7 @@ with open('library.txt','r') as f:
     for library in f:
         exec(library)
 import functions as fc
+import math
 warnings.filterwarnings('ignore',category=np.RankWarning)
 def plot_TR_graph(Wafer,Date,Position):
 
@@ -14,6 +15,8 @@ def plot_TR_graph(Wafer,Date,Position):
     trans_ref = np.array([])
     wave_len_max = []
     trans_max = []
+    bias = []
+    I = np.array([])
     smoothed_trans = np.array([])
     temp1 = 0
     temp2 = 0
@@ -32,6 +35,7 @@ def plot_TR_graph(Wafer,Date,Position):
                 continue
             wave_len = np.append(wave_len, np.array(list(map(float, WL_sweep.find('L').text.split(',')))))
             trans = np.append(trans, np.array(list(map(float, WL_sweep.find('IL').text.split(',')))))
+            bias.append(float(WL_sweep.attrib['DCBias']))
             temp2 += 1
         temp1 += 1
     wave_len = wave_len.reshape(temp2,int(trans.size/temp2))
@@ -40,6 +44,7 @@ def plot_TR_graph(Wafer,Date,Position):
     s = 150
     for i in range(wave_len.shape[0]):
         trans[i] = trans[i] - fit_trans_ref
+        # plt.plot(wave_len[i],trans[i])
         trans_half_temp = []
         wave_len_half_temp = []
         for k in range(wave_len.shape[1]):
@@ -57,8 +62,6 @@ def plot_TR_graph(Wafer,Date,Position):
 
         # plt.plot(wave_len_half[i],trans_half[i],'ro',markersize=0.5)#######
 
-    # for i in range(len(wave_len_half)):
-
     for i in range(len(wave_len_half)):
         wave_len_max_temp = []
         trans_max_temp = []
@@ -72,16 +75,28 @@ def plot_TR_graph(Wafer,Date,Position):
             if (wave_len_half[i][j + 2] - wave_len_half[i][j + 1]) >= (wave_len_half[i][j + 1] - wave_len_half[i][j] + 6):
                 wave_len_max_temp.append(wave_len_half[i][j + 2])
                 trans_max_temp.append(trans_half[i][j + 2])
-        wave_len_max.append(wave_len_max_temp)
-        trans_max.append(trans_max_temp)
+        if wave_len_max_temp[0] < wave_len_max_temp[1]+2:
+            wave_len_max.append(wave_len_max_temp[1:])
+            trans_max.append(trans_max_temp[1:])
+        else:
+            wave_len_max.append(wave_len_max_temp)
+            trans_max.append(trans_max_temp)
         # print(wave_len_max_temp,trans_max_temp)
         # plt.plot(wave_len_max,trans_max,'ro')
         trans[i] = trans[i] - fc.flat_fit_function(np.array(wave_len_max[i]), np.array(trans_max[i]))(wave_len[i]) # flatten 한 데이터들로 다시 trans 변수를 할당
-        plt.plot(wave_len[i],trans[i],'b-')
+        # plt.plot(wave_len[i],trans[i],'b-')
+        I = np.append(I,10**(trans[i]/10)/1000)
+    # print(I)
+    I = I.reshape(temp2,int(len(I)/temp2))
+    # for i in range(temp2):
+    #     plt.plot(wave_len[i],I[i])
     # 극댓값 정보를 찾기 -> 여러개 시도
+    # print(I[bias.index(0.0)], wave_len[bias.index(0.0)])
+    fc.Transmission_fitting_n_eff(wave_len,I,bias)
+    # plt.plot(wave_len[bias.index(0.0)],1 * np.array(list(map(math.sin,math.pi*40*10**(-9)*2.6/wave_len[bias.index(0.0)])))**2)
     plt.show()
-plot_TR_graph('D07','20190715_190855','(0,0)')
 
+plot_TR_graph('D07','20190715_190855','(0,-4)')
   # -> 시도 방법 1 (극댓값 찾기)
 '''
     trans_max=np.array([])

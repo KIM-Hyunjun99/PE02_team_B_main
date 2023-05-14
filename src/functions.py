@@ -3,6 +3,7 @@ import os
 with open('library.txt','r') as f:
     for library in f:
         exec(library)
+import math
 
 def fit_data(X,Y,N):
     coef = np.polyfit(X, Y, N)
@@ -85,7 +86,7 @@ def shockely_diode_IV_fit(V,I):
     fit_data = func(V[:10])
     fit_data = np.append(fit_data, result.best_fit)
     return fit_data
-
+'''
 def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반환하는 함수
     Rs = []
     for i in range(1, 11):
@@ -94,4 +95,34 @@ def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반
         fitted_data = func(X)
         Rs.append(R_square(X, Y, fitted_data))
     max_degree = Rs.index(max(Rs)) + 1
+    # plt.plot(X,np.poly1d(np.polyfit(X,Y,max_degree))(X))
     return np.poly1d(np.polyfit(X,Y,max_degree))
+'''
+def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반환하는 함수
+    coef = np.polyfit(X, Y, 1)
+    func = np.poly1d(coef)
+    return func
+
+def Transmission_fitting_n_eff(wave_length,intensity,bias):
+    def modulator_TR_model(wave_length,I_0,n_eff,b):
+        delta_l = 40 * 10**(-9)
+        pi = math.pi
+        return I_0 * np.array(list(map(math.sin,pi*delta_l*n_eff/wave_length/10**(-9))))**2+b
+
+    model = Model(modulator_TR_model)
+
+    # 초기 매개 변수 설정
+    params = model.make_params(
+        I_0 = 1,
+        n_eff = 2.6,
+        b = 0
+    )
+    # 모델 피팅
+    # print(wave_length.shape,intensity.shape)
+    result = model.fit(intensity[bias.index(0.0)], params, wave_length=wave_length[bias.index(0.0)])
+    print(result.best_values)
+    plt.plot(wave_length[bias.index(0.0)],intensity[bias.index(0.0)],'r')
+    plt.plot(wave_length[bias.index(0.0)],result.best_fit,'b')
+    # 결과 출력
+    # print(result.fit_report())
+    return 0
