@@ -7,6 +7,7 @@ from lmfit import Model
 import warnings
 import pandas as pd
 import graph_individual as gi
+import produce_csv as pc
 
 def graph(x):
     insert = x
@@ -24,6 +25,7 @@ def graph(x):
     if 'csv_file' in output_elements:
         graph_elements = output_elements.pop()
         k = len(graph_elements)
+        pc.create_csv()
     else:
         graph_elements = output_elements
         k = len(graph_elements)
@@ -36,7 +38,7 @@ def graph(x):
         if not os.path.exists("../res/" + folder_name):
             os.makedirs("../res/" + folder_name)
         plt.savefig('../res/' + folder_name + '/' + '{}_{}_{}'.format(*data_elements[x]) + ' '.join(str(x) for x in graph_elements) + '.png')
-        # plt.show()
+        plt.show()
     def graph_select(x,y):
         if graph_elements[x] == 'IV':
             gi.IV_graph_plot(*data_elements[y])
@@ -50,7 +52,6 @@ def graph(x):
         if k == 1:
             graph_select(0,i)
             graph_saving(i)
-            plt.show()
 
         elif k == 2:
             plt.subplot(1,2,1)
@@ -58,7 +59,22 @@ def graph(x):
             plt.subplot(1,2,2)
             graph_select(1,i)
             graph_saving(i)
-            plt.show()
+
+        elif k == 2:
+            plt.subplot(1,2,1)
+            graph_select(0,i)
+            plt.subplot(1,2,2)
+            graph_select(1,i)
+            graph_saving(i)
+
+        elif k == 3:
+            plt.subplot(1,3,1)
+            graph_select(0,i)
+            plt.subplot(1,3,2)
+            graph_select(1,i)
+            plt.subplot(1, 3, 3)
+            graph_select(2, i)
+            graph_saving(i)
 
         elif k == 4:
             plt.subplot(2,4,1)
@@ -70,4 +86,3 @@ def graph(x):
             plt.subplot(2,4,3)
             graph_select(3,i)
             graph_saving(i)
-            plt.show()
