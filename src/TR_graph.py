@@ -54,13 +54,13 @@ def plot_TR_graph(Wafer,Date,Position):
             for g in range(1,(s+1)):
                 if trans[i][k] > trans[i][k+g]:
                     count += 1
-            if count >= s-4:
+            if count >= s-3:
                 trans_half_temp.append(trans[i][k])
                 wave_len_half_temp.append(wave_len[i][k])
         wave_len_half.append(wave_len_half_temp)
         trans_half.append(trans_half_temp)
-
         # plt.plot(wave_len_half[i],trans_half[i],'ro',markersize=0.5)#######
+    # plt.show()
 
     for i in range(len(wave_len_half)):
         wave_len_max_temp = []
@@ -70,12 +70,12 @@ def plot_TR_graph(Wafer,Date,Position):
                 wave_len_max_temp.append(wave_len_half[i][j])
                 trans_max_temp.append(trans_half[i][j])
                 continue
-            elif j >= len(wave_len_half[i]) - 3:
+            elif j >= len(wave_len_half[i]) - 4:
                 continue
-            if (wave_len_half[i][j + 2] - wave_len_half[i][j + 1]) >= (wave_len_half[i][j + 1] - wave_len_half[i][j] + 6):
+            if (wave_len_half[i][j + 2] - wave_len_half[i][j + 1]) >= (wave_len_half[i][j + 1] - wave_len_half[i][j] + 5):
                 wave_len_max_temp.append(wave_len_half[i][j + 2])
                 trans_max_temp.append(trans_half[i][j + 2])
-        if wave_len_max_temp[0] < wave_len_max_temp[1]+2:
+        if trans_max_temp[0] < trans_max_temp[1]+0.5:
             wave_len_max.append(wave_len_max_temp[1:])
             trans_max.append(trans_max_temp[1:])
         else:
@@ -94,9 +94,10 @@ def plot_TR_graph(Wafer,Date,Position):
     # print(I[bias.index(0.0)], wave_len[bias.index(0.0)])
     fc.Transmission_fitting_n_eff(wave_len,I,bias)
     # plt.plot(wave_len[bias.index(0.0)],1 * np.array(list(map(math.sin,math.pi*40*10**(-9)*2.6/wave_len[bias.index(0.0)])))**2)
+    print(trans_max[bias.index(0.0)])
     plt.show()
 
-plot_TR_graph('D07','20190715_190855','(0,-4)')
+plot_TR_graph('D24','20190603_225101','(2,2)')
   # -> 시도 방법 1 (극댓값 찾기)
 '''
     trans_max=np.array([])

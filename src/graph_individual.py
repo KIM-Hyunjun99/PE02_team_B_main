@@ -42,9 +42,15 @@ def IV_graph_plot(X, Y, Z):
         plt.text(-1, I[4] * 1.5, '{:.11f}[A]'.format(I[4]), fontsize=6)
         plt.text(0.5, I[12] * 1.5, '{:.11f}[A]'.format(I[12]), fontsize=6)
 
-
+        now = datetime.now()
+        # 폴더 이름 만들기 (예: 2023-05-04)
+        folder_name = now.strftime("%Y-%m-%d")
+        # 폴더 생성하기
+        if not os.path.exists("../res/" + folder_name):
+            os.makedirs("../res/" + folder_name)
+        plt.savefig('../res/' + folder_name + '/' + X + Y + Z + 'IV graph' + '.png')
+        # plt.show()
         return 0
-
 
 def transmission_spectra(X,Y,Z):
     for file_name in os.listdir(os.path.join('../dat', X, Y)):
@@ -76,9 +82,17 @@ def transmission_spectra(X,Y,Z):
     plt.title("Transmission spectra - as measured", fontdict={'weight': 'bold', 'size': 10})  # 그래프 제목을 설정
     plt.xlabel('Wavelength [nm]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # x축 레이블을 설정
     plt.ylabel('Measured transmission [dB]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # y축 레이블을 설정
+    now = datetime.now()
 
+    # 폴더 이름 만들기 (예: 2023-05-04)
+    folder_name = now.strftime("%Y-%m-%d")
+
+    # 폴더 생성하기
+    if not os.path.exists("../res/" + folder_name):
+        os.makedirs("../res/" + folder_name)
+    plt.savefig('../res/' + folder_name + '/' + X + Y + Z + 'transmission spectra' + '.png')
+    # plt.show()
     return 0
-
 
 def transmission_rsquare(X,Y,Z):
     for file_name in os.listdir(os.path.join('../dat', X, Y)):
@@ -133,6 +147,14 @@ def transmission_rsquare(X,Y,Z):
     plt.gca().add_artist(plt.legend(handles=[line], loc='upper right'))  # REF 레이블을 추가합니다.
     plt.legend(handles=plots, ncol=3, loc="lower center", fontsize=5)
 
+    now = datetime.now()
 
+    # 폴더 이름 만들기 (예: 2023-05-04)
+    folder_name = now.strftime("%Y-%m-%d")
+
+    # 폴더 생성하기
+    if not os.path.exists("../res/" + folder_name):
+        os.makedirs("../res/" + folder_name)
+    plt.savefig('../res/'+folder_name + '/' +X+Y+Z+'transmission rsquare'+'.png')
+    # plt.show()
     return 0
-
