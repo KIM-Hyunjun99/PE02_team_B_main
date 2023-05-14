@@ -7,3 +7,4 @@ from lmfit import Model
 import warnings
 import pandas as pd
 from tkinter import *
+import math
