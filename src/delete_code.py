@@ -1,13 +1,22 @@
 import os
 import shutil
 
-# res 폴더 경로
-res_dir = "../res/"
 
-# res 폴더 내의 모든 파일과 디렉토리 삭제 (res 폴더 제외)
-for file_name in os.listdir(res_dir):
-    file_path = os.path.join(res_dir, file_name)
-    if file_name != "res" and os.path.isdir(file_path):
-        shutil.rmtree(file_path)
-    elif not os.path.isdir(file_path):
-        os.remove(file_path)
+
+def delete():
+    res_dir = "../res/"
+    print('folder deleted')
+
+
+    # res 폴더 내의 모든 파일과 디렉토리 삭제 (res 폴더 제외)
+    for file_name in os.listdir(res_dir):
+        file_path = os.path.join(res_dir, file_name)
+        if file_name != "res" and os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+        elif not os.path.isdir(file_path):
+            os.remove(file_path)
+    return
+# res 폴더 경로
+
+
+
