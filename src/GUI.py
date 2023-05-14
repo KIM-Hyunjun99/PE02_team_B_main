@@ -25,7 +25,8 @@ def GUI():
         filename_dict[dirpath.split('\\')[-2] + '_' + dirpath.split('\\')[-1]] = filelist1
 
   lot_date_dict = dict(zip(np.array(lot_list).flatten().tolist(), date_list))
-
+  print(lot_date_dict)
+  print(filename_dict)
   import tkinter as tk
   from tkinter import ttk
 
