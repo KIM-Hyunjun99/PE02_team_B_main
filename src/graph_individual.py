@@ -19,8 +19,6 @@ def IV_graph_plot(X, Y, Z):
         for i in root.iter('Voltage'):
             V = np.array(list(map(float, i.text.split(','))))
 
-        v = list(V)
-
         plt.plot(V,func.shockely_diode_IV_fit(V,I), 'k--', label='best-fit')  # 근사 데이터 그래프 검은색 점선으로 plot
         plt.plot(V, I, 'ro', label='data')  # 측정 데이터 그래프 빨간색 점으로 plot
         plt.yscale('logit')  # y축 scale logit으로 지정)
@@ -36,15 +34,17 @@ def IV_graph_plot(X, Y, Z):
         # show particular data using text method in mathplotlib library
         plt.text(0.02, 0.8, 'R_square = {:.15f}'.format(func.shockely_diode_IV_fit_R(V,I)), fontsize=8,
                  transform=plt.gca().transAxes)
-        plt.text(0.02, 0.75, '-1V = {:.12f}[A]'.format(I[v.index(-1)]), fontsize=8, transform=plt.gca().transAxes)
-        plt.text(0.02, 0.7, '+1V = {:.12f}[A]'.format(I[v.index(1)]), fontsize=8, transform=plt.gca().transAxes)
+        plt.text(0.02, 0.75, '-1V = {:.12f}[A]'.format(I[4]), fontsize=8, transform=plt.gca().transAxes)
+        plt.text(0.02, 0.7, '+1V = {:.12f}[A]'.format(I[12]), fontsize=8, transform=plt.gca().transAxes)
         # plt.gca().transAxes -> help set up the position of text(x: 0~1, y:0~1) 0 4 12
-        plt.text(-2, I[v.index(-2)], '{:.11f}A'.format(I[v.index(-2)]),
+        plt.text(-2, I[0] * 1.5, '{:.11f}A'.format(I[0]),
                  fontsize=6)  # y좌표에 1.5를 곱해주는 이유 = text가 점과 겹쳐서 보이기 때문에 1.5를 곱해 text 위치를 상향조정
-        plt.text(-1, I[v.index(-1)], '{:.11f}[A]'.format(I[v.index(-1)]), fontsize=6)
-        plt.text(0.5, I[v.index(1)], '{:.11f}[A]'.format(v.index(1)), fontsize=6)
+        plt.text(-1, I[4] * 1.5, '{:.11f}[A]'.format(I[4]), fontsize=6)
+        plt.text(0.5, I[12] * 1.5, '{:.11f}[A]'.format(I[12]), fontsize=6)
+
 
         return 0
+
 
 def transmission_spectra(X,Y,Z):
     for file_name in os.listdir(os.path.join('../dat', X, Y)):
@@ -78,6 +78,7 @@ def transmission_spectra(X,Y,Z):
     plt.ylabel('Measured transmission [dB]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # y축 레이블을 설정
 
     return 0
+
 
 def transmission_rsquare(X,Y,Z):
     for file_name in os.listdir(os.path.join('../dat', X, Y)):
@@ -132,4 +133,6 @@ def transmission_rsquare(X,Y,Z):
     plt.gca().add_artist(plt.legend(handles=[line], loc='upper right'))  # REF 레이블을 추가합니다.
     plt.legend(handles=plots, ncol=3, loc="lower center", fontsize=5)
 
+
     return 0
+
