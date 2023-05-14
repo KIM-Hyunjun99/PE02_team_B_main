@@ -2,11 +2,6 @@ import tkinter.messagebox as messagebox
 import os
 import numpy as np
 import graph_show as gs
-import shutil
-import delete_code as dc
-import produce_csv as pr
-
-
 
 def GUI():
   lot_list = []
@@ -106,7 +101,6 @@ def GUI():
     globals()['checkbox_select{}'.format(h)].pack(side='left', anchor='w')  # 체크박스를 띄우고 위치를 지정
 
   def show_selected():
-
     global selected
     d = 0
     which = 0
@@ -140,20 +134,17 @@ def GUI():
       print(selected)
       gs.graph(selected)
 
-
   # 확인 버튼 생성
   labelblank3 = tk.Label(root, text='         ')
   labelblank3.pack(side='top', anchor='w')
-  button1 = tk.Button(root, text="confirm", command=show_selected)
-  button1.pack(side='top')
-  button2 = tk.Button(root, text="Exit", command=root.destroy)
-  button2.pack(side='top')
-  button3 = tk.Button(root, text="clear res", command=dc.delete)
-  button3.pack(side='top')
+  button = tk.Button(root, text="confirm", command=show_selected)
+  button.pack(side='top')
+  button = tk.Button(root, text="Exit", command=root.destroy)
+  button.pack(side='top')
 
   # Tkinter 창 실행
   root.mainloop()
   return
 
 
-GUI()  # 일단 에프오 눌러서 실행은 되야하니깐! 나중에 모듈 호출할때는 제거?
+GUI()
