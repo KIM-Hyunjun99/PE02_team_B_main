@@ -19,4 +19,4 @@ def delete():
 # res 폴더 경로
 
 
-
+#delete()
