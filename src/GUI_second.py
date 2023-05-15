@@ -4,7 +4,7 @@ import numpy as np
 import graph_show as gs
 import shutil
 import delete_code as dc
-import produce_csv as pr
+import produce_csv as prc
 
 
 
@@ -41,7 +41,7 @@ def GUI():
   # Tkinter 창 생성
   root = tk.Tk()
   root.title("User Interface for Inspection Range")
-  root.geometry("360x600+550+120")
+  root.geometry("370x600+550+120")
 
   # 혹시 쓸일이 있을까 만들어 놓은거
   # keylist=[]
@@ -96,9 +96,9 @@ def GUI():
     labelblank1.pack(side='top', anchor='w')
   frame2 = tk.Frame(root)
   frame2.pack(side='top', anchor='w')
-  labelblank2 = tk.Label(frame2, text='      ')
+  labelblank2 = tk.Label(frame2, text='                 ')
   labelblank2.pack(side='left', anchor='w')
-  for h in ['IV', 'TR', 'Ref_fit', 'Tr_flatten','csv_file']:
+  for h in ['IV', 'TR', 'Ref_fit', 'Tr_flatten']:
     globals()['var_select{}'.format(h)] = tk.BooleanVar()  # 상태를 True/Farse 형태로 저장한다는 말.
     globals()['checkbox_select{}'.format(h)] = tk.Checkbutton(frame2, text=h,
                                                               variable=globals()['var_select{}'.format(h)])
@@ -110,6 +110,7 @@ def GUI():
     global selected
     d = 0
     which = 0
+    csv = 0
     selected = []
     for key in data:
       values = data[key]
@@ -122,34 +123,49 @@ def GUI():
           # 체크 된 값이 있다면 유효한 선택이 있었다는 횟수 d를 1올리고 최종 선택 리스트에 key, value1, 콤보박스 설정값을 추가.
           selected.append((key, value1, c.get()))
         elif var.get() == True and c.get() == '선택가능':  # 날짜는 선택되었지만 콤보박스가 설정되지 않았다면 오류메시지 띄움
+          d+=1
           messagebox.askokcancel("Warning", "선택된 날짜의 row/column 설정되지 않았습니다.")
-          d += 1
+
           selected = []
-    for h in ['IV', 'TR', 'Ref_fit', 'Tr_flatten', 'csv_file']:
+    for h in ['IV', 'TR', 'Ref_fit', 'Tr_flatten']:
       if globals()['var_select{}'.format(h)].get() == True:
         which += 1
         # 체크 된 값이 있다면 유효한 선택이 있었다는 횟수 which를 1올리고 최종 선택 리스트에 key, value1, 콤보박스 설정값을 추가.
         selected.append(h)
 
 
-    if selected == [] or d == 0:
+
+    if d == 0 or which == 0:
       messagebox.askokcancel("Warning", "선택된 파일/ 그래프 형태가 없습니다.")
       selected = []
 
-    elif selected != []:
+    elif d != 0 or which != 0:
       print(selected)
       gs.graph(selected)
 
 
+
   # 확인 버튼 생성
-  labelblank3 = tk.Label(root, text='         ')
+  labelblank3 = tk.Label(root, text='    ')
   labelblank3.pack(side='top', anchor='w')
-  button1 = tk.Button(root, text="confirm", command=show_selected)
-  button1.pack(side='top')
-  button2 = tk.Button(root, text="Exit", command=root.destroy)
-  button2.pack(side='top')
-  button3 = tk.Button(root, text="clear res", command=dc.delete)
-  button3.pack(side='top')
+  #frame3 = tk.Frame(root)
+  #frame3.pack(side='top', anchor='w')
+  labelblank3 = tk.Label(root, text='    ')
+  labelblank3.pack(side='left', anchor='w')
+  button1 = tk.Button(root, text="confirm", command=show_selected,font=("Roboto", 10))
+  button1.pack(side='left')
+  labelblank3 = tk.Label(root, text='    ')
+  labelblank3.pack(side='left', anchor='w')
+  button2 = tk.Button(root, text="Exit", command=root.destroy,font=("Roboto", 10))
+  button2.pack(side='left')
+  labelblank3 = tk.Label(root, text='    ')
+  labelblank3.pack(side='left', anchor='w')
+  button3 = tk.Button(root, text="clear res", command=dc.delete,font=("Roboto", 10))
+  button3.pack(side='left')
+  labelblank3 = tk.Label(root, text='    ')
+  labelblank3.pack(side='left', anchor='w')
+  button4 = tk.Button(root, text="create_csv_file", command=prc.create_csv,font=("Roboto", 10))
+  button4.pack(side='left')
 
   # Tkinter 창 실행
   root.mainloop()
