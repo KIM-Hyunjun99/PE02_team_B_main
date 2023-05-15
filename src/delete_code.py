@@ -13,10 +13,7 @@ def delete():
         file_path = os.path.join(res_dir, file_name)
         if file_name != "res" and os.path.isdir(file_path):
             shutil.rmtree(file_path)
-        elif not os.path.isdir(file_path):
+        elif not os.path.isdir(file_path) and file_name != 'result will be save at this folder.txt':
             os.remove(file_path)
     return
 # res 폴더 경로
-
-
-#delete()
