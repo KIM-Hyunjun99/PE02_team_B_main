@@ -12,32 +12,24 @@ import produce_csv as pc
 def graph(x):
     insert = x
     data_elements = []
-    output_elements = []
+    graph_elements = []
 
     for element in insert:
         if isinstance(element, list) or isinstance(element, tuple):
             data_elements.append(element)
         else:
-            output_elements.append(element)
+            graph_elements.append(element)
 
-
-
-    if 'csv_file' in output_elements:
-        graph_elements = output_elements.pop()
-        k = len(graph_elements)
-        pc.create_csv()
-    else:
-        graph_elements = output_elements
-        k = len(graph_elements)
+    k = len(graph_elements)
 
     def graph_saving(x):
         now = datetime.now()
        # 폴더 이름 만들기 (예: 2023-05-04)
         folder_name = now.strftime("%Y-%m-%d")
         # 폴더 생성하기
-        if not os.path.exists("../res/" + folder_name):
-            os.makedirs("../res/" + folder_name)
-        plt.savefig('../res/' + folder_name + '/' + '{}_{}_{}'.format(*data_elements[x]) + ' '.join(str(x) for x in graph_elements) + '.png')
+        if not os.path.exists("../res/" + folder_name + '/graph'):
+            os.makedirs("../res/" + folder_name + '/graph')
+        plt.savefig('../res/' + folder_name + '/graph/' + '{}_{}_{}'.format(*data_elements[x]) + ' '.join(str(x) for x in graph_elements) + '.png')
         plt.show()
     def graph_select(x,y):
         if graph_elements[x] == 'IV':

@@ -37,10 +37,10 @@ def IV_graph_plot(X, Y, Z):
         plt.text(0.02, 0.75, '-1V = {:.12f}[A]'.format(I[4]), fontsize=8, transform=plt.gca().transAxes)
         plt.text(0.02, 0.7, '+1V = {:.12f}[A]'.format(I[12]), fontsize=8, transform=plt.gca().transAxes)
         # plt.gca().transAxes -> help set up the position of text(x: 0~1, y:0~1) 0 4 12
-        plt.text(-2, I[0] * 1.5, '{:.11f}A'.format(I[0]),
+        plt.text(-2, I[0], '{:.11f}A'.format(I[0]),
                  fontsize=6)  # y좌표에 1.5를 곱해주는 이유 = text가 점과 겹쳐서 보이기 때문에 1.5를 곱해 text 위치를 상향조정
-        plt.text(-1, I[4] * 1.5, '{:.11f}[A]'.format(I[4]), fontsize=6)
-        plt.text(0.5, I[12] * 1.5, '{:.11f}[A]'.format(I[12]), fontsize=6)
+        plt.text(-1, I[4], '{:.11f}[A]'.format(I[4]), fontsize=6)
+        plt.text(0.5, I[12], '{:.11f}[A]'.format(I[12]), fontsize=6)
 
 
         return 0
