@@ -9,6 +9,7 @@ import pandas as pd
 from tkinter import *
 import math
 import functions as func
+import TR_graph_plot
 
 def IV_graph_plot(A, X, Y, Z):
     for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
@@ -136,4 +137,19 @@ def transmission_rsquare(A,X,Y,Z):
     plt.legend(handles=plots, ncol=3, loc="lower center", fontsize=5)
 
     return 0
+
+def intensity_spectra(A, X, Y, Z):
+    test = TR_graph_plot.plot_TR(A, X, Y, Z)
+    test.data_parse()
+    test.fitted_TR_graph_plot()
+
+def del_n_eff_voltage(A, X, Y, Z):
+    test = TR_graph_plot.plot_TR(A, X, Y, Z)
+    test.data_parse()
+    test.del_n_eff_by_voltage()
+
+# intensity_spectra('HY202103','D07','20190715_190855','(0,0)')
+# del_n_eff_voltage('HY202103','D07','20190715_190855','(0,0)')
+# plt.show()
+
 
