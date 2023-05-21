@@ -35,5 +35,7 @@ def default():
     default_list.append('IV')
     default_list.append('TR')
     default_list.append('Ref_fit')
+    default_list.append('TR_fit')
+    default_list.append('del_n_eff')
 
     gs.graph(default_list)
