@@ -16,3 +16,4 @@ def delete():
         elif not os.path.isdir(file_path) and file_name != 'result will be save at this folder.txt':
             os.remove(file_path)
     return
+# res 폴더 경로
