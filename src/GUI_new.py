@@ -7,6 +7,7 @@ import delete_code as dc
 import produce_csv as prc
 import tkinter as tk
 from tkinter import ttk
+import default_show as df
 
 
 def GUI():
@@ -207,19 +208,20 @@ def GUI():
   frame3 = tk.Frame(root2)
   frame3.pack(side='bottom', anchor='w')
 
-  button6 = tk.Button(frame3, text="default", command=prc.create_csv, font=("Roboto", 10))
+  button6 = tk.Button(frame3, text="default", command=lambda : (prc.create_csv(), df.default()), font=("Roboto", 10))
   button6.pack(side='left', anchor="w")
   label = tk.Label(frame3, text='       ')
   label.pack(side='left', anchor='w')
+
   button4 = tk.Button(frame3, text="create_csv_file", command=prc.create_csv, font=("Roboto", 10))
   button4.pack(side='left', anchor ="w")
   label = tk.Label(frame3, text='       ')
   label.pack(side='left', anchor='w')
+
   button4 = tk.Button(frame3, text="clear res", command=dc.delete, font=("Roboto", 10))
   button4.pack(side='left', anchor="w")
   root2.mainloop()
   return
-
 
 
 GUI()

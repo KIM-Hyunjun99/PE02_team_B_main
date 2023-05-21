@@ -11,6 +11,7 @@ from tkinter import ttk
 
 
 
+
 def GUI():
   lot_list = []
   date_list = []
