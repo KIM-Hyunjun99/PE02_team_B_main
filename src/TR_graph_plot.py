@@ -126,7 +126,7 @@ class plot_TR:
         plt.xticks(fontsize=6)  # modulate axis label's fontsize
         plt.yticks(fontsize=6)
         plt.title('Fitted Intensity Graph',fontdict=self.title_font_properties)
-        plt.legend(loc='upper right',fontsize='8',ncol=2)
+        plt.legend(loc='upper right',fontsize=5, ncol=2)
         plt.grid()
     def del_n_eff_by_voltage(self):
         plt.plot(self.bias, self.del_n_eff, 'r-')
