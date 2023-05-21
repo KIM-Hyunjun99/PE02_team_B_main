@@ -9,7 +9,7 @@ import pandas as pd
 from tkinter import *
 import math
 import functions as func
-import TR_graph_plot
+import TR_graph_plot_edit
 
 def IV_graph_plot(A, X, Y, Z):
     for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
@@ -145,12 +145,12 @@ def transmission_rsquare(A,X,Y,Z):
     return 0
 
 def intensity_spectra(A, X, Y, Z):
-    test = TR_graph_plot.plot_TR(A, X, Y, Z)
+    test = TR_graph_plot_edit.plot_TR(A, X, Y, Z)
     test.data_parse()
     test.fitted_TR_graph_plot()
 
 def del_n_eff_voltage(A, X, Y, Z):
-    test = TR_graph_plot.plot_TR(A, X, Y, Z)
+    test = TR_graph_plot_edit.plot_TR(A, X, Y, Z)
     test.data_parse()
     test.del_n_eff_by_voltage()
 

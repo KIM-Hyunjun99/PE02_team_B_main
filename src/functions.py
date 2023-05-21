@@ -18,6 +18,11 @@ def R_square(X,Y,Y_reg): # R square 값을 계산하는 함수
     SSR=sum((Y-Y_reg)**2)
     return 1-SSR/SST # R square 값을 반환
 
+def Ref_fit_func(X,Y,N):
+    coef = np.polyfit(X, Y, N)
+    func = np.poly1d(coef)
+    return func
+
 def Best_fit_R(X,Y): # 가장 R_sqaure가 1에 가까운 R_square 값을 반환하는 함수
     Rs = []
     for i in range(1,11):
@@ -52,7 +57,7 @@ def shockely_diode_IV_fit_R(V,I):
     fit_data = np.append(fit_data, result.best_fit)
     return float(str(R_square(V,I,fit_data))[:9])
 
-def Ref_fitted_data(X,Y): # 가장 R_square가 클 때의 fitting data를 반환하는 함수
+def Ref_fitted_func(X,Y): # 가장 R_square가 클 때의 fitting data를 반환하는 함수
     Rs = []
     for i in range(1,11):
         coef = np.polyfit(X,Y,i)
@@ -60,7 +65,7 @@ def Ref_fitted_data(X,Y): # 가장 R_square가 클 때의 fitting data를 반환
         fitted_data = func(X)
         Rs.append(R_square(X,Y,fitted_data))
     max_degree = Rs.index(max(Rs))+1
-    return fit_data(X,Y,max_degree)
+    return Ref_fit_func(X,Y,max_degree)
 
 def shockely_diode_IV_fit(V,I):
     def shockely_diode(voltage, rev_sat_I, n):
