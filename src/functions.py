@@ -3,6 +3,7 @@ import os
 with open('library.txt','r') as f:
     for library in f:
         exec(library)
+from lmfit import Parameters, minimize
 
 def fit_data(X,Y,N):
     coef = np.polyfit(X, Y, N)
@@ -96,21 +97,12 @@ def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반
     max_degree = Rs.index(max(Rs)) + 1
     return np.poly1d(np.polyfit(X,Y,max_degree))
 
-def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반환하는 함수
-    Rs = []
-    for i in range(1, 11):
-        coef = np.polyfit(X, Y, i)
-        func = np.poly1d(coef)
-        fitted_data = func(X)
-        Rs.append(R_square(X, Y, fitted_data))
-    max_degree = Rs.index(max(Rs)) + 1
-    # plt.plot(X,np.poly1d(np.polyfit(X,Y,max_degree))(X))
-    return np.poly1d(np.polyfit(X,Y,max_degree))
 '''
 def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반환하는 함수
     coef = np.polyfit(X, Y, 1)
     func = np.poly1d(coef)
     return func
+'''
 '''
 def Transmission_fitting_n_eff(wave_length,intensity,bias):
     def modulator_TR_model(wave_length,I_0,n_eff,b):
@@ -135,42 +127,79 @@ def Transmission_fitting_n_eff(wave_length,intensity,bias):
     # 결과 출력
     # print(result.fit_report())
     return 0
-def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반환하는 함수
-    Rs = []
-    for i in range(1, 11):
-        coef = np.polyfit(X, Y, i)
-        func = np.poly1d(coef)
-        fitted_data = func(X)
-        Rs.append(R_square(X, Y, fitted_data))
-    max_degree = Rs.index(max(Rs)) + 1
-    # plt.plot(X,np.poly1d(np.polyfit(X,Y,max_degree))(X))
-    return np.poly1d(np.polyfit(X,Y,max_degree))
 '''
-def flat_fit_function(X,Y): # R_square가 가장 클 때의 근사 함수를 반환하는 함수
-    coef = np.polyfit(X, Y, 1)
-    func = np.poly1d(coef)
-    return func
-'''
+
 def Transmission_fitting_n_eff(wave_length,intensity,bias):
-    def modulator_TR_model(wave_length,I_0,n_eff,b):
+    def modulator_TR_model(wave_length,n_eff):
+        delta_l = 40*10**(-6)
+        # delta_l = 1200 * 10 ** (-6)
+        pi = math.pi
+        I_0 = 0.001
+        return I_0 * np.array(list(map(math.sin,pi*delta_l*n_eff/(wave_length*10**(-9)))))**2
+
+    model = Model(modulator_TR_model)
+
+    # 초기 매개 변수 설정
+    params = model.make_params(
+        n_eff = 4.2
+        # n_eff=0.14
+    )
+    # 모델 피팅
+    # print(wave_length.shape,intensity.shape)
+    result = model.fit(intensity[bias.index(0.0)], params, wave_length=wave_length[bias.index(0.0)])
+    # print(result.best_values)
+    # plt.plot(wave_length[bias.index(0.0)],intensity[bias.index(0.0)],'r')
+    # plt.plot(wave_length[bias.index(0.0)],result.best_fit,'b')
+    # 결과 출력wave_length[bias.index(0.0)]
+    # print(result.fit_report())
+    return (float(result.best_values['n_eff']),result.best_fit)
+
+'''
+def Transmission_fitting_n_eff(frequency,intensity,bias,n_eff):
+    def modulator_TR_model(freq,I_0,n_eff):
         delta_l = 40 * 10**(-9)
         pi = math.pi
-        return I_0 * np.array(list(map(math.sin,pi*delta_l*n_eff/wave_length/10**(-9))))**2+b
+        c = 3*10**8
+        return I_0 * np.array(list(map(math.sin,pi*delta_l*n_eff*freq/c/10**(-9))))**2
 
     model = Model(modulator_TR_model)
 
     # 초기 매개 변수 설정
     params = model.make_params(
         I_0 = 1,
-        n_eff = 2.6,
-        b = 0
+        n_eff = 2.6
     )
     # 모델 피팅
     # print(wave_length.shape,intensity.shape)
-    result = model.fit(intensity[bias.index(0.0)], params, wave_length=wave_length[bias.index(0.0)])
+    result = model.fit(intensity[bias.index(0.0)], params, freq=frequency[bias.index(0.0)])
     print(result.best_values)
-    plt.plot(wave_length[bias.index(0.0)],intensity[bias.index(0.0)],'r')
-    plt.plot(wave_length[bias.index(0.0)],result.best_fit,'b')
+    plt.plot(frequency[bias.index(0.0)],intensity[bias.index(0.0)],'r')
+    plt.plot(frequency[bias.index(0.0)],result.best_fit,'b')
     # 결과 출력
     # print(result.fit_report())
     return 0
+'''
+
+def Transmission_fitting_n_eff_V(wave_length,intensity,n_eff,bias,bia):
+    def modulator_TR_model_total(wave_length,del_n_eff):
+        delta_l = 40*10**(-6)
+        pi = math.pi
+        I_0 = 0.001
+        l = 500*10**(-6)
+        return I_0 * np.sin(pi*delta_l*n_eff/(wave_length*10**(-9))+pi * del_n_eff * l / (wave_length*10**(-9)))**2
+        # return I_0 * np.array(list(map(math.sin,(pi*delta_l*n_eff/(wave_length*10**(-9)))+(pi * del_n_eff * l / (wave_length*10**(-9))))))**2
+
+    model = Model(modulator_TR_model_total)
+
+    # 초기 매개 변수 설정
+    params = model.make_params(
+        del_n_eff = 0.001
+    )
+    # 모델 피팅
+    result = model.fit(intensity[bias.index(bia)], params, wave_length=wave_length[bias.index(bia)])
+    # plt.plot(wave_length[bias.index(bia)],intensity[bias.index(bia)])
+    # plt.plot(wave_length[bias.index(bia)],result.best_fit)
+    # plt.show()
+    # print(bia,result.best_values)
+    # print(result.fit_report())
+    return (result.best_values['del_n_eff'],result.best_fit)
