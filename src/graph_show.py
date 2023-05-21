@@ -25,7 +25,7 @@ def graph(x):
     def graph_saving(x):
         if not os.path.exists("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
             os.makedirs("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
-        if k == 4:
+        if k == 5:
             plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + '.png')
         else:
             plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + str({",".join(graph_elements)}) + '.png')
@@ -36,6 +36,10 @@ def graph(x):
             gi.transmission_spectra(*data_elements[y])
         elif graph_elements[x] == 'Ref_fit':
             gi.transmission_rsquare(*data_elements[y])
+        elif graph_elements[x] == 'flat1':
+            gi.intensity_spectra(*data_elements[y])
+        elif graph_elements[x] == 'flat2':
+            gi.del_n_eff_voltage(*data_elements[y])
 
     for i in range(0,len(data_elements)):
 
@@ -64,12 +68,26 @@ def graph(x):
 
         elif k == 4:
             plt.clf()
-            plt.subplot(2,4,1)
+            plt.subplot(2,2,1)
             graph_select(0,i)
-            plt.subplot(2,4,2)
+            plt.subplot(2,2,2)
             graph_select(1,i)
-            plt.subplot(2,4,3)
+            plt.subplot(2,2,3)
             graph_select(2,i)
-            plt.subplot(2,4,4)
+            plt.subplot(2,2,4)
             graph_select(3,i)
+            graph_saving(i)
+
+        elif k == 5:
+            plt.clf()
+            plt.subplot(2, 3, 1)
+            graph_select(0, i)
+            plt.subplot(2, 3, 2)
+            graph_select(1, i)
+            plt.subplot(2, 3, 3)
+            graph_select(2, i)
+            plt.subplot(2, 3, 4)
+            graph_select(3, i)
+            plt.subplot(2, 3, 5)
+            graph_select(4, i)
             graph_saving(i)
