@@ -38,5 +38,3 @@ def default():
     print(default_list)
 
     gs.graph(default_list)
-
-default()
