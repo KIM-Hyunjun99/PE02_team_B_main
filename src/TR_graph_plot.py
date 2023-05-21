@@ -6,7 +6,8 @@ import functions as fc
 import math
 warnings.filterwarnings('ignore',category=np.RankWarning)
 class plot_TR:
-    def __init__(self,Wafer,Date,Position):
+    def __init__(self,Lot,Wafer,Date,Position):
+        self.Lot = Lot
         self.Wafer = Wafer
         self.Date = Date
         self.Position = Position
@@ -27,7 +28,7 @@ class plot_TR:
         temp1 = 0
         temp2 = 0
 
-        path = os.path.join('..', 'dat', self.Wafer, self.Date)
+        path = os.path.join('..', 'dat',self.Lot ,self.Wafer, self.Date)
         file_name = [os.path.join(path, f) for f in os.listdir(path) if
                      'LMZ' in f and f.endswith('.xml') and self.Position in f]
 
@@ -133,7 +134,7 @@ class plot_TR:
         plt.show()
 
 # 예시 사용 방법
-test = plot_TR('D08','20190526_082853','(0,0)')
+test = plot_TR('HY202103','D08','20190526_082853','(0,0)')
 test.data_parse()
 test.fitted_TR_graph_plot()
 test.del_n_eff_by_voltage()
