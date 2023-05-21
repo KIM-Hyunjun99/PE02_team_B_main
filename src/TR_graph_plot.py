@@ -105,24 +105,27 @@ class plot_TR:
         # 극댓값 정보를 찾기 -> 여러개 시도
         # print(I[bias.index(0.0)], wave_len[bias.index(0.0)])
         # print(bias)
-    def fitted_TR_graph_plot(self):
+
         self.del_n_eff = []
+        self.fitted_TR_data = []
         result_n_eff = fc.Transmission_fitting_n_eff(self.wave_len, self.I, self.bias)
         n_eff = result_n_eff[0]
         for bia in self.bias:
             if bia == 0.0:
                 self.del_n_eff.append(0.0)
-                plt.plot(self.wave_len[self.bias.index(0.0)],fc.Transmission_fitting_n_eff(self.wave_len, self.I, self.bias)[1],linewidth=0.8,label=f'{bia}V')
+                self.fitted_TR_data.append(result_n_eff[1])
                 continue
             result_del_n_eff = fc.Transmission_fitting_n_eff_V(self.wave_len, self.I, n_eff, self.bias, bia)
             self.del_n_eff.append(result_del_n_eff[0])
-            plt.plot(self.wave_len[self.bias.index(bia)],result_del_n_eff[1],linewidth=0.8,label=f'{bia}V')
+            self.fitted_TR_data.append(result_del_n_eff[1])
+    def fitted_TR_graph_plot(self):
+        for bia in self.bias:
+            plt.plot(self.wave_len[self.bias.index(bia)],self.fitted_TR_data[self.bias.index(bia)],linewidth=0.8,label=f'{bia}V')
         plt.xlabel('wavelength[nm]',fontdict=self.label_font_properties)
         plt.ylabel('intensity[W]',fontdict=self.label_font_properties)
         plt.title('Fitted Intensity Graph',fontdict=self.title_font_properties)
         plt.legend(loc='upper right',fontsize='8',ncol=2)
         plt.grid()
-        plt.show()
     def del_n_eff_by_voltage(self):
         plt.plot(self.bias, self.del_n_eff, 'r-')
         plt.axhline(0, color='black',linestyle='dashed',linewidth=1)  # x축에 대한 수평선
@@ -131,10 +134,9 @@ class plot_TR:
         plt.ylabel(r'$\Delta$'+'n_eff', fontdict=self.label_font_properties)
         plt.title(r'$\Delta$'+'n_eff - Voltage Graph', fontdict=self.title_font_properties)
         plt.grid()
-        plt.show()
 
 # 예시 사용 방법
-test = plot_TR('HY202103','D08','20190526_082853','(0,0)')
-test.data_parse()
-test.fitted_TR_graph_plot()
-test.del_n_eff_by_voltage()
+# test = plot_TR('HY202103','D08','20190526_082853','(0,0)')
+# test.data_parse()
+# test.fitted_TR_graph_plot()
+# test.del_n_eff_by_voltage()
