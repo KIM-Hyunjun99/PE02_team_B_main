@@ -5,6 +5,9 @@ import graph_show as gs
 import shutil
 import delete_code as dc
 import produce_csv as prc
+import matplotlib.pyplot as plt
+import tkinter as tk
+from tkinter import ttk
 
 
 
@@ -18,9 +21,9 @@ def GUI():
   # data_file 디렉토리와 그 하위 디렉토리를 순회하면서 파일 경로를 검색
   for dirpath, dirnames, filenames in os.walk('../dat'):
     n += 1
-    if n == 1:
+    if n == 2:
       lot_list.append(dirnames)
-    if n > 1 and dirnames != []:
+    if n > 2 and dirnames != []:
       date_list.append(dirnames)
 
   for dirpath, dirnames, filenames in os.walk('../dat'):
@@ -32,8 +35,7 @@ def GUI():
 
   lot_date_dict = dict(zip(np.array(lot_list).flatten().tolist(), date_list))
 
-  import tkinter as tk
-  from tkinter import ttk
+
 
   # 딕셔너리 정의
   data = lot_date_dict
@@ -106,7 +108,6 @@ def GUI():
     globals()['checkbox_select{}'.format(h)].pack(side='left', anchor='w')  # 체크박스를 띄우고 위치를 지정
 
   def show_selected():
-
     global selected
     d = 0
     which = 0
@@ -141,7 +142,8 @@ def GUI():
 
     elif d != 0 or which != 0:
       print(selected)
-      gs.graph(selected)
+      #gs.graph(selected)
+      #plt.show()
 
 
 
