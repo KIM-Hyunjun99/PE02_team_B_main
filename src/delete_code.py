@@ -17,3 +17,4 @@ def delete():
             os.remove(file_path)
     return
 # res 폴더 경로
+delete()

@@ -1,1 +1,0 @@
-result directory will be created as date/graph or date/csv
