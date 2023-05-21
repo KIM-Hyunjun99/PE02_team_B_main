@@ -1,56 +1,58 @@
-# 라이브러리 import
-with open('library.txt', 'r') as f:
-    for library in f:
-        exec(library)
-
+import xml.etree.ElementTree as elemTree
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import datetime
+import os
+from lmfit import Model
+import warnings
+import pandas as pd
+from tkinter import *
+import math
 import functions as func
 
-def IV_graph_plot(X, Y, Z):
-    for file_name in os.listdir(os.path.join('../dat', X, Y)):
+def IV_graph_plot(A, X, Y, Z):
+    for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            print(os.path.join('../dat',X, Y, file_name))
-            tree = elemTree.parse(os.path.join('../dat',X, Y, file_name))
+            print(os.path.join('../dat', A, X, Y, file_name))
+            tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
             root = tree.getroot()
         else:
             continue
-        for i in root.iter('Current'):  # IV 데이터 parsing
-            I = np.array(list(map(float, i.text.split(','))))
-            I = abs(I)  # absolute value of Current data
-        for i in root.iter('Voltage'):
-            V = np.array(list(map(float, i.text.split(','))))
+    for i in root.iter('Current'):  # IV 데이터 parsing
+        I = np.array(list(map(float, i.text.split(','))))
+        I = abs(I)  # absolute value of Current data
+    for i in root.iter('Voltage'):
+        V = np.array(list(map(float, i.text.split(','))))
 
-        plt.plot(V,func.shockely_diode_IV_fit(V,I), 'k--', label='best-fit')  # 근사 데이터 그래프 검은색 점선으로 plot
-        plt.plot(V, I, 'ro', label='data')  # 측정 데이터 그래프 빨간색 점으로 plot
-        plt.yscale('logit')  # y축 scale logit으로 지정)
+    plt.plot(V,func.shockely_diode_IV_fit(V,I), 'k--', label='best-fit')  # 근사 데이터 그래프 검은색 점선으로 plot
+    plt.plot(V, I, 'ro', label='data')  # 측정 데이터 그래프 빨간색 점으로 plot
+    plt.yscale('logit')  # y축 scale logit으로 지정)
 
-        # 그래프 label, 디자인 설정
-        plt.xlabel('Voltage[V]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})
-        plt.ylabel('Current[A]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})
-        plt.title('IV analysis', fontdict={'weight': 'bold', 'size': 10})
-        plt.grid(True)  # 그리드 추가
-        plt.legend(loc='upper left', fontsize=7)  # show legend
-        plt.xticks(fontsize=6)  # modulate axis label's fontsize
-        plt.yticks(fontsize=6)
-        # show particular data using text method in mathplotlib library
-        plt.text(0.02, 0.8, 'R_square = {:.15f}'.format(func.shockely_diode_IV_fit_R(V,I)), fontsize=8,
-                 transform=plt.gca().transAxes)
-        plt.text(0.02, 0.75, '-1V = {:.12f}[A]'.format(I[4]), fontsize=8, transform=plt.gca().transAxes)
-        plt.text(0.02, 0.7, '+1V = {:.12f}[A]'.format(I[12]), fontsize=8, transform=plt.gca().transAxes)
-        # plt.gca().transAxes -> help set up the position of text(x: 0~1, y:0~1) 0 4 12
-        plt.text(-2, I[0], '{:.11f}A'.format(I[0]),
-                 fontsize=6)  # y좌표에 1.5를 곱해주는 이유 = text가 점과 겹쳐서 보이기 때문에 1.5를 곱해 text 위치를 상향조정
-        plt.text(-1, I[4], '{:.11f}[A]'.format(I[4]), fontsize=6)
-        plt.text(0.5, I[12], '{:.11f}[A]'.format(I[12]), fontsize=6)
+    # 그래프 label, 디자인 설정
+    plt.xlabel('Voltage[V]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})
+    plt.ylabel('Current[A]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})
+    plt.title('IV analysis', fontdict={'weight': 'bold', 'size': 10})
+    plt.grid(True)  # 그리드 추가
+    plt.legend(loc='upper left', fontsize=7)  # show legend
+    plt.xticks(fontsize=6)  # modulate axis label's fontsize
+    plt.yticks(fontsize=6)
+    # show particular data using text method in mathplotlib library
+    plt.text(0.02, 0.8, 'R_square = {:.15f}'.format(func.shockely_diode_IV_fit_R(V,I)), fontsize=8, transform=plt.gca().transAxes)
+    plt.text(0.02, 0.75, '-1V = {:.12f}[A]'.format(I[4]), fontsize=8, transform=plt.gca().transAxes)
+    plt.text(0.02, 0.7, '+1V = {:.12f}[A]'.format(I[12]), fontsize=8, transform=plt.gca().transAxes)
+    # plt.gca().transAxes -> help set up the position of text(x: 0~1, y:0~1) 0 4 12
+    plt.text(-2, I[0], '{:.11f}A'.format(I[0]), fontsize=6)  # y좌표에 1.5를 곱해주는 이유 = text가 점과 겹쳐서 보이기 때문에 1.5를 곱해 text 위치를 상향조정
+    plt.text(-1, I[4], '{:.11f}[A]'.format(I[4]), fontsize=6)
+    plt.text(0.5, I[12], '{:.11f}[A]'.format(I[12]), fontsize=6)
 
 
-        return 0
+    return 0
 
 
-def transmission_spectra(X,Y,Z):
-    for file_name in os.listdir(os.path.join('../dat', X, Y)):
+def transmission_spectra(A, X, Y, Z):
+    for file_name in os.listdir(os.path.join('../dat', A,  X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            print(os.path.join('../dat',X, Y, file_name))
-            tree = elemTree.parse(os.path.join('../dat',X, Y, file_name))
+            tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
             root = tree.getroot()
         else:
             continue
@@ -80,11 +82,11 @@ def transmission_spectra(X,Y,Z):
     return 0
 
 
-def transmission_rsquare(X,Y,Z):
-    for file_name in os.listdir(os.path.join('../dat', X, Y)):
+def transmission_rsquare(A,X,Y,Z):
+    for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
         if Z in file_name and 'LMZ' in file_name:
             print(os.path.join('../dat',X, Y, file_name))
-            tree = elemTree.parse(os.path.join('../dat',X, Y, file_name))
+            tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
             root = tree.getroot()
         else:
             continue
@@ -132,7 +134,6 @@ def transmission_rsquare(X,Y,Z):
     line, = plt.plot(v[6][0], v[6][1], color='gray', label="REF")
     plt.gca().add_artist(plt.legend(handles=[line], loc='upper right'))  # REF 레이블을 추가합니다.
     plt.legend(handles=plots, ncol=3, loc="lower center", fontsize=5)
-
 
     return 0
 
