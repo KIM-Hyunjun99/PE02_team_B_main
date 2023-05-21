@@ -11,8 +11,8 @@ class plot_TR:
         self.Wafer = Wafer
         self.Date = Date
         self.Position = Position
-        self.label_font_properties = {'family':'serif','size':12}
-        self.title_font_properties = {'family':'serif','size':15,'weight':'bold'}
+        self.label_font_properties = {'size':7,'weight':'bold'}
+        self.title_font_properties = {'size':10,'weight':'bold'}
     def data_parse(self):
         self.wave_len = np.array([])
         self.wave_len_ref = np.array([])
@@ -123,6 +123,8 @@ class plot_TR:
             plt.plot(self.wave_len[self.bias.index(bia)],self.fitted_TR_data[self.bias.index(bia)],linewidth=0.8,label=f'{bia}V')
         plt.xlabel('wavelength[nm]',fontdict=self.label_font_properties)
         plt.ylabel('intensity[W]',fontdict=self.label_font_properties)
+        plt.xticks(fontsize=6)  # modulate axis label's fontsize
+        plt.yticks(fontsize=6)
         plt.title('Fitted Intensity Graph',fontdict=self.title_font_properties)
         plt.legend(loc='upper right',fontsize='8',ncol=2)
         plt.grid()
@@ -130,6 +132,8 @@ class plot_TR:
         plt.plot(self.bias, self.del_n_eff, 'r-')
         plt.axhline(0, color='black',linestyle='dashed',linewidth=1)  # x축에 대한 수평선
         plt.axvline(0, color='black',linestyle='dashed',linewidth=1)  # y축에 대한 수직선
+        plt.xticks(fontsize=6)  # modulate axis label's fontsize
+        plt.yticks(fontsize=6)
         plt.xlabel('voltage[V]', fontdict=self.label_font_properties)
         plt.ylabel(r'$\Delta$'+'n_eff', fontdict=self.label_font_properties)
         plt.title(r'$\Delta$'+'n_eff - Voltage Graph', fontdict=self.title_font_properties)

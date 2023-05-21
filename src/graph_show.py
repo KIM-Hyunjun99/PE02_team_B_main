@@ -26,9 +26,9 @@ def graph(x):
         if not os.path.exists("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
             os.makedirs("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
         if k == 5:
-            plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + '.png')
+            plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + '.png', dpi = 160)
         else:
-            plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + str({",".join(graph_elements)}) + '.png')
+            plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + str({",".join(graph_elements)}) + '.png', dpi = 160)
     def graph_select(x,y):
         if graph_elements[x] == 'IV':
             gi.IV_graph_plot(*data_elements[y])
@@ -90,4 +90,8 @@ def graph(x):
             graph_select(3, i)
             plt.subplot(2, 3, 5)
             graph_select(4, i)
+            plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.75, wspace=0.75)
             graph_saving(i)
+
+
+

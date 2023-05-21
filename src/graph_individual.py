@@ -38,13 +38,13 @@ def IV_graph_plot(A, X, Y, Z):
     plt.xticks(fontsize=6)  # modulate axis label's fontsize
     plt.yticks(fontsize=6)
     # show particular data using text method in mathplotlib library
-    plt.text(0.02, 0.8, 'R_square = {:.15f}'.format(func.shockely_diode_IV_fit_R(V,I)), fontsize=8, transform=plt.gca().transAxes)
-    plt.text(0.02, 0.75, '-1V = {:.12f}[A]'.format(I[4]), fontsize=8, transform=plt.gca().transAxes)
-    plt.text(0.02, 0.7, '+1V = {:.12f}[A]'.format(I[12]), fontsize=8, transform=plt.gca().transAxes)
+    plt.text(0.02, 0.8, 'R_square = {:.15f}'.format(func.shockely_diode_IV_fit_R(V,I)), fontsize=6, transform=plt.gca().transAxes)
+    plt.text(0.02, 0.75, '-1V = {:.12f}[A]'.format(I[4]), fontsize=6, transform=plt.gca().transAxes)
+    plt.text(0.02, 0.7, '+1V = {:.12f}[A]'.format(I[12]), fontsize=6, transform=plt.gca().transAxes)
     # plt.gca().transAxes -> help set up the position of text(x: 0~1, y:0~1) 0 4 12
     plt.text(-2, I[0], '{:.11f}A'.format(I[0]), fontsize=6)  # y좌표에 1.5를 곱해주는 이유 = text가 점과 겹쳐서 보이기 때문에 1.5를 곱해 text 위치를 상향조정
     plt.text(-1, I[4], '{:.11f}[A]'.format(I[4]), fontsize=6)
-    plt.text(0.5, I[12], '{:.11f}[A]'.format(I[12]), fontsize=6)
+    plt.text(0, I[12], '{:.11f}[A]'.format(I[12]), fontsize=6)
 
 
     return 0
@@ -76,7 +76,9 @@ def transmission_spectra(A, X, Y, Z):
 
     plt.gca().add_artist(plt.legend(handles=[line], loc='upper right', fontsize=7))  # REF 레이블을 추가
     plt.legend(handles=plots, ncol=3, loc="lower center", fontsize=7)  # 나머지 레이블을 추가
-    plt.title("Transmission spectra - as measured", fontdict={'weight': 'bold', 'size': 10})  # 그래프 제목을 설정
+    plt.title("Transmission spectra", fontdict={'weight': 'bold', 'size': 10})  # 그래프 제목을 설정
+    plt.xticks(fontsize=6)  # modulate axis label's fontsize
+    plt.yticks(fontsize=6)
     plt.xlabel('Wavelength [nm]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # x축 레이블을 설정
     plt.ylabel('Measured transmission [dB]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # y축 레이블을 설정
 
@@ -133,6 +135,10 @@ def transmission_rsquare(A,X,Y,Z):
             plt.text(0.3, 0.45+0.05*(i-1), f'R\u00B2({max_ind+i+1}deg)= {rs[max_ind+i]}', fontsize=5, transform=plt.gca().transAxes)
 
     line, = plt.plot(v[6][0], v[6][1], color='gray', label="REF")
+    plt.xticks(fontsize=6)  # modulate axis label's fontsize
+    plt.yticks(fontsize=6)
+    plt.xlabel('Wavelength [nm]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # x축 레이블을 설정
+    plt.ylabel('Measured transmission [dB]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # y축 레이블을 설정
     plt.gca().add_artist(plt.legend(handles=[line], loc='upper right'))  # REF 레이블을 추가합니다.
     plt.legend(handles=plots, ncol=3, loc="lower center", fontsize=5)
 
