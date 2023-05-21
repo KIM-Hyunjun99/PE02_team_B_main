@@ -39,5 +39,3 @@ def default():
     default_list.append('del_n_eff')
 
     gs.graph(default_list)
-
-default()
