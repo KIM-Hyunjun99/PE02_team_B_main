@@ -36,9 +36,9 @@ def graph(x):
             gi.transmission_spectra(*data_elements[y])
         elif graph_elements[x] == 'Ref_fit':
             gi.transmission_rsquare(*data_elements[y])
-        elif graph_elements[x] == 'flat1':
+        elif graph_elements[x] == 'TR_fit':
             gi.intensity_spectra(*data_elements[y])
-        elif graph_elements[x] == 'flat2':
+        elif graph_elements[x] == 'del_n_eff':
             gi.del_n_eff_voltage(*data_elements[y])
 
     for i in range(0,len(data_elements)):
