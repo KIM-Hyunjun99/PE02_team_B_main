@@ -33,7 +33,7 @@ def IV_graph_plot(A, X, Y, Z):
     plt.ylabel('Current[A]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})
     plt.title('IV analysis', fontdict={'weight': 'bold', 'size': 10})
     plt.grid(True)  # 그리드 추가
-    plt.legend(loc='upper left', fontsize=7)  # show legend
+    plt.legend(loc='upper left', fontsize=4)  # show legend
     plt.xticks(fontsize=6)  # modulate axis label's fontsize
     plt.yticks(fontsize=6)
     # show particular data using text method in mathplotlib library
@@ -75,11 +75,11 @@ def transmission_spectra(A, X, Y, Z):
 
     plt.gca().add_artist(plt.legend(handles=[line], loc='upper right', fontsize=7))  # REF 레이블을 추가
     plt.legend(handles=plots, ncol=3, loc="lower left", fontsize=5)  # 나머지 레이블을 추가
-    plt.title("Transmission spectra", fontdict={'weight': 'bold', 'size': 10})  # 그래프 제목을 설정
+    plt.title("Raw Transmission data", fontdict={'weight': 'bold', 'size': 10})  # 그래프 제목을 설정
     plt.xticks(fontsize=6)  # modulate axis label's fontsize
     plt.yticks(fontsize=6)
     plt.xlabel('Wavelength [nm]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # x축 레이블을 설정
-    plt.ylabel('Measured transmission [dB]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # y축 레이블을 설정
+    plt.ylabel('Measured Transmission [dB]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # y축 레이블을 설정
 
     return 0
 
@@ -137,7 +137,7 @@ def transmission_rsquare(A,X,Y,Z):
     plt.yticks(fontsize=6)
     plt.xlabel('Wavelength [nm]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # x축 레이블을 설정
     plt.ylabel('Measured transmission [dB]', labelpad=4, fontdict={'weight': 'bold', 'size': 7})  # y축 레이블을 설정
-    plt.gca().add_artist(plt.legend(handles=[line], loc='upper right'))  # REF 레이블을 추가합니다.
+    plt.gca().add_artist(plt.legend(handles=[line], loc='upper right', fontsize = 4))  # REF 레이블을 추가합니다.
     plt.legend(handles=plots, ncol=3, loc="lower left", fontsize=5)
 
     return 0
