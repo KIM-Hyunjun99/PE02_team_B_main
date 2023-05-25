@@ -137,8 +137,8 @@ class plot_TR:
         plt.grid()
 
 # 예시 사용 방법
-test = plot_TR('HY202103','D08','20190712_113254','(-1,-1)')
-test.data_parse()
+#test = plot_TR('HY202103','D08','20190712_113254','(-1,-1)')
+#test.data_parse()
 # test.fitted_TR_graph_plot()
-test.del_n_eff_by_voltage()
-plt.show()
+#test.del_n_eff_by_voltage()
+#plt.show()
