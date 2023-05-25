@@ -14,7 +14,6 @@ import TR_graph_plot_edit
 def IV_graph_plot(A, X, Y, Z):
     for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            print(os.path.join('../dat', A, X, Y, file_name))
             tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
             root = tree.getroot()
         else:
@@ -88,7 +87,6 @@ def transmission_spectra(A, X, Y, Z):
 def transmission_rsquare(A,X,Y,Z):
     for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            print(os.path.join('../dat',X, Y, file_name))
             tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
             root = tree.getroot()
         else:

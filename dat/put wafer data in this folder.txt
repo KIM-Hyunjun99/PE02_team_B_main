@@ -1,0 +1,1 @@
+you must make data directory form like dat/lot/wafer/file.xml
