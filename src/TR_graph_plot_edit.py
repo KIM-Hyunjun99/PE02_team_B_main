@@ -14,16 +14,16 @@ class plot_TR:
         self.label_font_properties = {'size':7,'weight':'bold'}
         self.title_font_properties = {'size':10,'weight':'bold'}
     def data_parse(self):
-        self.wave_len = np.array([])
+        self.wave_len = []
         self.wave_len_ref = np.array([])
-        self.trans = np.array([])
+        self.trans = []
         wave_len_half = []
         trans_half = []
         self.trans_ref = np.array([])
         wave_len_max = []
         trans_max = []
         self.bias = []
-        self.I = np.array([])
+        self.I = []
         # smoothed_trans = np.array([])
         temp1 = 0
         temp2 = 0
@@ -41,23 +41,21 @@ class plot_TR:
                     self.wave_len_ref = np.append(self.wave_len_ref, np.array(list(map(float, WL_sweep.find('L').text.split(',')))))
                     self.trans_ref = np.append(self.trans_ref, np.array(list(map(float, WL_sweep.find('IL').text.split(',')))))
                     continue
-                self.wave_len = np.append(self.wave_len, np.array(list(map(float, WL_sweep.find('L').text.split(',')))))
-                self.trans = np.append(self.trans, np.array(list(map(float, WL_sweep.find('IL').text.split(',')))))
+                self.wave_len.append(list(map(float, WL_sweep.find('L').text.split(','))))
+                self.trans.append(list(map(float, WL_sweep.find('IL').text.split(','))))
                 self.bias.append(float(WL_sweep.attrib['DCBias']))
                 temp2 += 1
             temp1 += 1
-        self.wave_len = self.wave_len.reshape(temp2, int(self.trans.size / temp2))
-        self.trans = self.trans.reshape(temp2, int(self.trans.size / temp2))
-        fit_trans_ref = fc.Ref_fitted_data(self.wave_len_ref, self.trans_ref)
         s = 150
-        for i in range(self.wave_len.shape[0]):
-            self.trans[i] = self.trans[i] - fit_trans_ref
+        for i in range(len(self.wave_len)):
+            fit_trans_ref = fc.Ref_fitted_func(self.wave_len_ref, self.trans_ref)(self.wave_len[i])
+            self.trans[i] = [ x - y for x,y in zip(self.trans[i],fit_trans_ref)]
             # plt.plot(wave_len[i],trans[i])
             trans_half_temp = []
             wave_len_half_temp = []
-            for k in range(self.wave_len.shape[1]):
+            for k in range(len(self.wave_len[i])):
                 count = 0
-                if k >= (self.wave_len.shape[1] - (s + 1)):
+                if k >= (len(self.wave_len[i]) - (s + 1)):
                     continue
                 for g in range(1, (s + 1)):
                     if self.trans[i][k] > self.trans[i][k + g]:
@@ -95,11 +93,10 @@ class plot_TR:
             # print(wave_len_max_temp,trans_max_temp)
             # plt.plot(wave_len_max[i],trans_max[i],'ro')
             # plt.plot(wave_len[i],fc.flat_fit_function(np.array(wave_len_max[i]), np.array(trans_max[i]))(wave_len[i]))
-            self.trans[i] = self.trans[i] - fc.flat_fit_function(np.array(wave_len_max[i]), np.array(trans_max[i]))(self.wave_len[i])  # flatten 한 데이터들로 다시 trans 변수를 할당
+            self.trans[i] = [x-y for x,y in zip(self.trans[i],fc.flat_fit_function(np.array(wave_len_max[i]), np.array(trans_max[i]))(self.wave_len[i]))]  # flatten 한 데이터들로 다시 trans 변수를 할당
             # plt.plot(wave_len[i],trans[i],'b-')
-            self.I = np.append(self.I, 10 ** (self.trans[i] / 10) / 1000)
+            self.I.append([10 ** (x / 10) / 1000 for x in self.trans[i]])
         # print(I)
-        self.I = self.I.reshape(temp2, int(len(self.I) / temp2))
         # for i in range(temp2):
         #     plt.plot(wave_len[i],I[i])
         # 극댓값 정보를 찾기 -> 여러개 시도
@@ -140,8 +137,8 @@ class plot_TR:
         plt.grid()
 
 # 예시 사용 방법
-# test = plot_TR('HY202103','D08','20190712_113254','(-1,-1)')
-# test.data_parse()
+test = plot_TR('HY202103','D08','20190712_113254','(-1,-1)')
+test.data_parse()
 # test.fitted_TR_graph_plot()
-# test.del_n_eff_by_voltage()
-# plt.show()
+test.del_n_eff_by_voltage()
+plt.show()

@@ -8,14 +8,16 @@ import warnings
 import pandas as pd
 import graph_individual as gi
 import graph_show as gs
+from tqdm import tqdm
+import time
 
 def default():
-# start_dir = 'C:\\Users\\audwl\\PycharmProjects\\TeamB_main\\dat'
+
+
     start_dir = os.path.join('..', 'dat')  # 제일 중요한 코드, '..'는 현재 디렉토리의 부모 디렉토리를 반환해주는 코드, 그걸 data_file과 연결
     file_paths = []  # 전체 파일 경로를 원소로 가지는 리스트 변수 초기화
 
-    # dat 디렉토리와 그 하위 디렉토리를 순회하면서 파
-
+    # dat 디렉토리와 그 하위 디렉토리를 순회하면서 파일 경로를 수집
     for dirpath, dirnames, filenames in os.walk(start_dir):
         for filename in filenames:
             if '_LMZ' in filename and filename.endswith('.xml'):
@@ -39,3 +41,4 @@ def default():
     default_list.append('del_n_eff')
 
     gs.graph(default_list)
+default()

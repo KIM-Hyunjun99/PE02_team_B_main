@@ -8,11 +8,13 @@ import warnings
 import pandas as pd
 import graph_individual as gi
 import produce_csv as pc
+from tqdm import tqdm
 
 def graph(x):
     insert = x
     data_elements = []
     graph_elements = []
+
 
     for element in insert:
         if isinstance(element, list) or isinstance(element, tuple):
@@ -23,12 +25,14 @@ def graph(x):
     k = len(graph_elements)
 
     def graph_saving(x):
-        if not os.path.exists("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
-            os.makedirs("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
-        if k == 5:
-            plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + '.png', dpi = 160)
-        else:
-            plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+'{}.{}.{}.{}'.format(*data_elements[x]) + str({",".join(graph_elements)}) + '.png', dpi = 160)
+        for file_name in os.listdir(os.path.join('../dat', data_elements[x][0], data_elements[x][1], data_elements[x][2])):
+            if data_elements[x][3] in file_name and 'LMZ' in file_name:
+                if not os.path.exists("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
+                    os.makedirs("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
+                if k == 5:
+                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + '.png', dpi = 800)
+                else:
+                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + str({",".join(graph_elements)}) + '.png', dpi = 800)
     def graph_select(x,y):
         if graph_elements[x] == 'IV':
             gi.IV_graph_plot(*data_elements[y])
@@ -40,6 +44,9 @@ def graph(x):
             gi.intensity_spectra(*data_elements[y])
         elif graph_elements[x] == 'del_n_eff':
             gi.del_n_eff_voltage(*data_elements[y])
+
+        # tqdm 객체 생성
+    progress_bar = tqdm(total=len(data_elements))
 
     for i in range(0,len(data_elements)):
 
@@ -93,5 +100,7 @@ def graph(x):
             plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.75, wspace=0.75)
             graph_saving(i)
 
+        progress_bar.update(1)
 
+    progress_bar.close()
 
