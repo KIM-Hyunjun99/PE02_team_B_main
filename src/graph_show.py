@@ -30,9 +30,9 @@ def graph(x):
                 if not os.path.exists("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
                     os.makedirs("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
                 if k == 5:
-                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + '.png', dpi = 800)
+                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + '.png', dpi = 300)
                 else:
-                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + str({",".join(graph_elements)}) + '.png', dpi = 800)
+                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + str({",".join(graph_elements)}) + '.png', dpi = 300)
     def graph_select(x,y):
         if graph_elements[x] == 'IV':
             gi.IV_graph_plot(*data_elements[y])
@@ -61,6 +61,7 @@ def graph(x):
             graph_select(0,i)
             plt.subplot(1,2,2)
             graph_select(1,i)
+            plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
 
         elif k == 3:
@@ -71,6 +72,7 @@ def graph(x):
             graph_select(1,i)
             plt.subplot(1, 3, 3)
             graph_select(2, i)
+            plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
 
         elif k == 4:
@@ -83,10 +85,12 @@ def graph(x):
             graph_select(2,i)
             plt.subplot(2,2,4)
             graph_select(3,i)
+            plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
 
         elif k == 5:
             plt.clf()
+            fig = plt.figure(figsize=(16, 9))
             plt.subplot(2, 3, 1)
             graph_select(0, i)
             plt.subplot(2, 3, 2)
@@ -97,7 +101,7 @@ def graph(x):
             graph_select(3, i)
             plt.subplot(2, 3, 5)
             graph_select(4, i)
-            plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.75, wspace=0.75)
+            plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
 
         progress_bar.update(1)
