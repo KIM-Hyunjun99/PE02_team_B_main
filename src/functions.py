@@ -198,7 +198,7 @@ def Transmission_fitting_n_eff_V(wave_length,intensity,n_eff,bias,bia):
 
     # 초기 매개 변수 설정
     params = model.make_params(
-        del_n_eff = 0.001
+        del_n_eff = 0.0001
     )
     # 모델 피팅
     result = model.fit(intensity[bias.index(bia)], params, wave_length=wave_length[bias.index(bia)])
