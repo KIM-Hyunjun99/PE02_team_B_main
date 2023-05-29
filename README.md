@@ -61,7 +61,7 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 
 ## Usage
-<img width="670" alt="GUI 1" src="https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/b4bfd4ba-fc53-4bd6-912e-6ccab5d7c0ac">
+<img width="670" alt="GUI 1" src="https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/535464f7-a2a6-400c-9434-865079a86a96">
 
 1. **Lots** : You can get the data by selecting the desired Lots.
 2. **Search All Lots** : You can choose the 'Search All Lots', Which is programmed for data for all Lots.
@@ -71,7 +71,7 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 
 **if you click the 'Lots number',  the GUI will go to the following page.**
 
-![GUI 3](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/1cab2405-4378-4d82-a4f5-7b675672563e)
+![GUI 3](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/415199d9-e06e-461f-8475-7b6ef669034b)
 
 5. **Date folder** : You can choose the data-folder you want.
    * You can select the coordinate of the wafer to the right of the selected wafer(e.g.,(1,1))
@@ -84,5 +84,5 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 ## Result
 
-![Graph 2](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/860c5556-ef0d-41ba-9fb2-d71bcee03094)
+![Graph 2](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/d6504a23-66ea-47c6-a864-15d90a27fd1c)
 
