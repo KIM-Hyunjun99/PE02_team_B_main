@@ -5,27 +5,30 @@
 
 ## Index
 [Introduction](#Introduction)   
-[Install](#Install)   
 [Environment](#Environment)   
 [skill](#skill)    
-[Usage](#Usage)   
-[Contributor](#Contributor)   
+[Usage](#Usage)     
+[Result](#Result)
 ***
 
 
 ## Introduction
-This tool is data analysis software using PyCharm. 
+- This tool is data analysis software using PyCharm. 
 
-Put the data file in the folder and input a wafer name you want, 
+- Put the data file in the folder and choose the name of lots you want,
 this program stores analyzed Dataframes and graphs and shows xml data customer give.
+- Through the measurement data, you can compare and analyze the data of the desired part.
+
+### -Team members 
+1. Kim Hyunjun - guswns9474@hanyang.ac.kr
+2. Seo Jaeyun - seojy06@hanyang.ac.kr
+3. Lee Jonggeon - dlwhdrjs020801@hanyang.ac.kr
+4. Jung Myungjin - jmj3034@hanyang.ac.kr
+
 
 ***
 
-## Install
- ```
-pip install -r requirements.txt
- ```
-***
+
 
 ## Environment
 
@@ -48,36 +51,38 @@ pip install -r requirements.txt
 - Select the information you want and it will visualize the data
 
 1. Excel file
-2. IV fitting graph
-3. Transmission spectra
-4. transmission spectra fitted graph
-5. reference transmission fitted graph
-6. Index of refrection - n_eff graph
+2. IV graph
+3. Transmission spectra graph
+4. transmission spectra Flat graph
+5. Intensity fitted graph
+6. Enlarged Transmission spectra fitted graph
+7. Del_n_eff graph
 
 ***
 
 ## Usage
-1. **Wafer** : You can type the wafer number you want in the data folder.
-2. **Coordinates** : You can type 'Row' and 'Column' from the wafer you choose.
-   * You must use parentheses. ex) (0,0) 
-   * Type "all" if you want to see the entire data.
-3. **Device ID** : You can type device ID from the wafer you choose.
-   * ex) LMZ, LMZC, LMZO ...
-4. **Show Output** : You can see the result graphs one by one.
-   * The graph is replaced every two seconds.
-   * It is not recommended because it takes a long time and if you have a PyCharm professional, you can see it in a scientific view.
-5. **Save Output** : You can save all of the graphs and csv file you choose.
-6. **Results folder** : You can open 'res' folder and confirm the figure and Excel file you saved.
-7. **OK** : You can save and execute the data you choose.
-8. **Quit** : Exit
-***
+<img width="670" alt="GUI 1" src="https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/535464f7-a2a6-400c-9434-865079a86a96">
+
+1. **Lots** : You can get the data by selecting the desired Lots.
+2. **Search All Lots** : You can choose the 'Search All Lots', Which is programmed for data for all Lots.
+   * If you don't want to get information about all Lot, choose Lot above yourself
+3. **create_csv_file** : Only csv files for data can be obtained.
+4. **Clear res** :Delete all data in the res folder.
+
+**if you click the 'Lots number',  the GUI will go to the following page.**
+
+![GUI 3](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/415199d9-e06e-461f-8475-7b6ef669034b)
+
+5. **Date folder** : You can choose the data-folder you want.
+   * You can select the coordinate of the wafer to the right of the selected wafer(e.g.,(1,1))
+   *  if you want to check the entire coordinates, the input can be 'all'.
+6. **Graph** : Desired graphs may be extracted by selecting a desired graph among IV graph, TR graph, Flat_TR graph, Intensity_fit graph, Enlarged_TR_fit graph, Del_n_eff graph.
+7. **confirm** : Execute the code according to the conditions you choose.
+8. **Exit** : Close the GUI.
+9. **Previous Page** : Proceed to the previous page of the GUI.
 
 ***
+## Result
 
-### -Team members 
-1. Kim Hyunjun - guswns9474@hanyang.ac.kr
-2. Seo Jaeyun - seojy06@hanyang.ac.kr
-3. Lee Jonggeon - dlwhdrjs020801@hanyang.ac.kr
-4. Jung Myungjin - jmj3034@hanyang.ac.kr
+![Graph 2](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/d6504a23-66ea-47c6-a864-15d90a27fd1c)
 
-***
