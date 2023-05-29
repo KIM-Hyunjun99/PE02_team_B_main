@@ -228,5 +228,3 @@ def GUI():
 
   root2.mainloop()
   return
-
-GUI()
