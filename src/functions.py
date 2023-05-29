@@ -208,3 +208,23 @@ def Transmission_fitting_n_eff_V(wave_length,intensity,n_eff,bias,bia):
     # print(bia,result.best_values)
     # print(result.fit_report())
     return (result.best_values['del_n_eff'],result.best_fit)
+
+def find_minimum_index(WL,TR):
+    dat_len = len(TR)
+    minimum_index = []
+    for i in range(150,dat_len-151):
+        count = 0
+        for k in range(-150,150):
+            if TR[i] < TR[i+k]:
+                count+=1
+            if count >= 298:
+                minimum_index.append(i)
+    return minimum_index
+def closest_data(ref,data):
+    min_dif = float('inf') # 초기값 무한대로 설정
+    nearest_data = 0
+    for x in data:
+        if abs(x-ref) < min_dif:
+            min_dif = abs(x-ref)
+            nearest_data = x
+    return nearest_data

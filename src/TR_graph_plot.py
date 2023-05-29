@@ -6,6 +6,7 @@ import functions as fc
 import math
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
+from scipy.signal import argrelextrema
 warnings.filterwarnings('ignore',category=np.RankWarning)
 class plot_TR:
     def __init__(self,Lot,Wafer,Date,Position):
@@ -35,10 +36,10 @@ class plot_TR:
         temp2 = 0
 
         path = os.path.join('..', 'dat',self.Lot ,self.Wafer, self.Date)
-        file_name = [os.path.join(path, f) for f in os.listdir(path) if
+        self.file_name = [os.path.join(path, f) for f in os.listdir(path) if
                      'LMZ' in f and f.endswith('.xml') and self.Position in f]
 
-        tree = elemTree.parse(file_name[0])
+        tree = elemTree.parse(self.file_name[0])
         root = tree.getroot()
 
         for modulator in root.iter('Modulator'):
@@ -190,7 +191,35 @@ class plot_TR:
         plt.title(r'$\Delta$'+'n_eff - Voltage Graph', fontdict=self.title_font_properties)
         plt.legend(loc='upper right',fontsize=6, ncol=2)
         plt.grid()
+    def enlarged_fitted_TR_graph(self):
+        ref_index = self.bias.index(0.0)
+        minimum = fc.find_minimum_index(self.wave_len[ref_index], self.raw_trans[ref_index])
+        minimum_wave_len = [self.wave_len[ref_index][i] for i in minimum]
+        index_range = int((self.wave_len[0].index(self.wave_len_max[0][1]) - self.wave_len[0].index(self.wave_len_max[0][0])) / 4)
+        # print(minimum_wave_len)
+        if 'LMZC' in self.file_name[0]:
+            ref_wave_len_index = self.wave_len[ref_index].index(fc.closest_data(1550, minimum_wave_len))
+        else:
+            ref_wave_len_index = self.wave_len[ref_index].index(fc.closest_data(1310, minimum_wave_len))
 
+        for bia in self.bias:
+            i = self.bias.index(bia)
+            dB_fitted_TR_data = 10 * np.log10([data*1000 for data in self.fitted_TR_data[i]])
+            fit_raw_TR = [ x+y+z for x,y,z in zip(dB_fitted_TR_data[(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)],
+                           self.max_fit[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)], self.fit_trans_ref[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)])]
+            plt.plot(self.wave_len[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)], fit_raw_TR, linestyle='dashed', linewidth=1,color=self.colors[i])
+            plt.plot(self.wave_len[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)],self.raw_trans[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)],marker='o',alpha=1,label='trans_ref',markersize=0.25,color=self.colors[i],linestyle='none')
+        plt.xticks(fontsize=6)  # modulate axis label's fontsize
+        plt.yticks(fontsize=6)
+        plt.title('Enlarged Transmission graph (raw & fit)', fontdict=self.title_font_properties)
+        plt.xlabel('wavelength[nm]', fontdict=self.label_font_properties)
+        plt.ylabel('transmission[dB]', fontdict=self.label_font_properties)
+        # plt.legend(handles=self.legend_elements, fontsize=5, ncol=2, loc='upper right')
+        font_props = {'weight': 'bold','size':6}
+        legend1 = plt.legend(['o : raw data','-- : fitted graph'], fontsize=5, ncol=1, loc=(0.01, 0.89), handlelength=0, prop=font_props)
+        plt.gca().add_artist(legend1)
+        plt.legend(handles=self.legend_elements, fontsize=6, ncol=2, loc='upper right')
+''' 허술한 코드 
     def enlarged_fitted_TR_graph(self):
         fit_ref = list(fc.Ref_fitted_func(self.wave_len_ref, self.trans_ref)(self.wave_len_ref))
         ref_wave_len_index = fit_ref.index(max(fit_ref))
@@ -212,6 +241,8 @@ class plot_TR:
         legend1 = plt.legend(['o : raw data','-- : fitted graph'], fontsize=5, ncol=1, loc=(0.01, 0.93), handlelength=0, prop=font_props)
         plt.gca().add_artist(legend1)
         plt.legend(handles=self.legend_elements, fontsize=6, ncol=2, loc='upper right')
+'''
+
 # 예시 사용 방법
 # test = plot_TR('HY202103','D08','20190712_113254','(-1,-1)')
 # test.data_parse()

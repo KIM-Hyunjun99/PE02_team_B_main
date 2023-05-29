@@ -152,7 +152,6 @@ def GUI():
       elif de != 0 or which != 0:
         print(selected)
         gs.graph(selected)  #나중에 재윤이형이랑 조율해야함 아직 작동 ㄴㄴ
-        plt.show()
       return
 
     # 확인 버튼 생성
