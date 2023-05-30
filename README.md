@@ -85,3 +85,4 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 
 ![Graph 2](./doc/images/Graph 1.png)
 
+
