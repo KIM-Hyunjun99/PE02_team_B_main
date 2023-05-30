@@ -219,6 +219,24 @@ class plot_TR:
         legend1 = plt.legend(['o : raw data','-- : fitted graph'], fontsize=5, ncol=1, loc=(0.01, 0.89), handlelength=0, prop=font_props)
         plt.gca().add_artist(legend1)
         plt.legend(handles=self.legend_elements, fontsize=6, ncol=2, loc='upper right')
+    def VpiL_plot(self):
+        for bia in self.bias:
+            if bia==0:
+                continue
+            i=self.bias.index(bia)
+            # print(fc.VpiL_data(bia, self.del_n_eff[self.bias.index(bia)], self.wave_len[self.bias.index(bia)]))
+            plt.plot(self.wave_len[i],list(fc.VpiL_data(bia, self.del_n_eff[i], self.wave_len[i])),color=self.colors[i])
+        plt.xticks(fontsize=6)  # modulate axis label's fontsize
+        plt.yticks(fontsize=6)
+        plt.title('V_piL graph', fontdict=self.title_font_properties)
+        plt.xlabel('wavelength[nm]', fontdict=self.label_font_properties)
+        plt.ylabel('V_piL[V]', fontdict=self.label_font_properties)
+        self.colors.remove(self.colors[self.bias.index(0.0)])
+        self.legend_name.remove('0.0[V]')
+        self.legend_elements = [Patch(facecolor=color, edgecolor=color, label=label, linewidth=0.01) for color, label in zip(self.colors, self.legend_name)]
+        plt.legend(handles=self.legend_elements, fontsize=6, ncol=2, loc='upper right')
+
+
 ''' 허술한 코드 
     def enlarged_fitted_TR_graph(self):
         fit_ref = list(fc.Ref_fitted_func(self.wave_len_ref, self.trans_ref)(self.wave_len_ref))
@@ -251,4 +269,5 @@ class plot_TR:
 # test.enlarged_fitted_TR_graph()
 # plt.show()
 # test.del_n_eff_by_voltage()
+# test.VpiL_plot()
 # plt.show()

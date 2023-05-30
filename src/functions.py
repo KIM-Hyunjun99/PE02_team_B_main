@@ -1,8 +1,7 @@
 # 라이브러리 import
 import os
 with open('library.txt','r') as f:
-    for library in f:
-        exec(library)
+    for library in f:        exec(library)
 from lmfit import Parameters, minimize
 
 def fit_data(X,Y,N):
@@ -228,3 +227,5 @@ def closest_data(ref,data):
             min_dif = abs(x-ref)
             nearest_data = x
     return nearest_data
+def VpiL_data(bia,del_n_eff,WL):
+    return np.array(WL)*10**(-9)/2*-bia/del_n_eff
