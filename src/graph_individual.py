@@ -165,4 +165,4 @@ def flat_TR_graph_plot(A, X, Y, Z):
 # del_n_eff_voltage('HY202103','D07','20190715_190855','(0,0)')
 # plt.show()
 
-
+# default 돌릴 때
