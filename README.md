@@ -83,5 +83,6 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 ## Result
 
-![Graph 1](./doc/images/Graph 1.png)
+![Graph 2](./doc/images/Graph 1.png)
+
 
