@@ -61,8 +61,7 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 
 ## Usage
-<img width="670" alt="GUI 1" src="https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/535464f7-a2a6-400c-9434-865079a86a96">
-
+![GUI 0](./doc/images/GUI 0.PNG)
 1. **Lots** : You can get the data by selecting the desired Lots.
 2. **Search All Lots** : You can choose the 'Search All Lots', Which is programmed for data for all Lots.
    * If you don't want to get information about all Lot, choose Lot above yourself
@@ -84,5 +83,5 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 ## Result
 
-![Graph 2](./doc/images/Graph 2.png)
+![Graph 1](./doc/images/Graph 1.png)
 
