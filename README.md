@@ -61,7 +61,7 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 
 ## Usage
-![GUI 0](./doc/images/GUI 0.PNG)
+![GUI 0](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/a5d0e352-335d-430c-9a09-9db125d16159)
 1. **Lots** : You can get the data by selecting the desired Lots.
 2. **Search All Lots** : You can choose the 'Search All Lots', Which is programmed for data for all Lots.
    * If you don't want to get information about all Lot, choose Lot above yourself
@@ -70,7 +70,7 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 
 **if you click the 'Lots number',  the GUI will go to the following page.**
 
-![GUI 3](./doc/images/GUI 3.PNG)
+![GUI 3](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/64d06d7a-7018-4d97-ab56-9eb3d8bb47b1)
 
 5. **Date folder** : You can choose the data-folder you want.
    * You can select the coordinate of the wafer to the right of the selected wafer(e.g.,(1,1))
@@ -83,6 +83,6 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 ## Result
 
-![Graph 2](./doc/images/Graph 1.png)
+![Graph 2](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/54d5ed63-5101-4239-94b5-6fa5f4d17e9b)
 
 
