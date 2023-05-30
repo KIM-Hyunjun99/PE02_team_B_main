@@ -29,7 +29,7 @@ def graph(x):
             if data_elements[x][3] in file_name and 'LMZ' in file_name:
                 if not os.path.exists("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
                     os.makedirs("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
-                if k == 5:
+                if k == 6:
                     plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + '.png', dpi = 300)
                 else:
                     plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + str({",".join(graph_elements)}) + '.png', dpi = 300)
@@ -53,11 +53,13 @@ def graph(x):
     for i in range(0,len(data_elements)):
 
         if k == 1:
+            fig = plt.figure(figsize=(14, 7))
             plt.clf()
             graph_select(0,i)
             graph_saving(i)
             plt.show()
         elif k == 2:
+            fig = plt.figure(figsize=(16, 4.5))
             plt.clf()
             plt.subplot(1,2,1)
             graph_select(0,i)
@@ -67,6 +69,7 @@ def graph(x):
             graph_saving(i)
             plt.show()
         elif k == 3:
+            fig = plt.figure(figsize=(16, 4.5))
             plt.clf()
             plt.subplot(1,3,1)
             graph_select(0,i)
@@ -78,6 +81,7 @@ def graph(x):
             graph_saving(i)
             plt.show()
         elif k == 4:
+            fig = plt.figure(figsize=(12, 12))
             plt.clf()
             plt.subplot(2,2,1)
             graph_select(0,i)
@@ -91,8 +95,8 @@ def graph(x):
             graph_saving(i)
             plt.show()
         elif k == 5:
-            plt.clf()
             fig = plt.figure(figsize=(16, 9))
+            plt.clf()
             plt.subplot(2, 3, 1)
             graph_select(0, i)
             plt.subplot(2, 3, 2)
@@ -107,8 +111,8 @@ def graph(x):
             graph_saving(i)
             plt.show()
         elif k == 6:
-            plt.clf()
             fig = plt.figure(figsize=(16, 9))
+            plt.clf()
             plt.subplot(2, 3, 1)
             graph_select(0, i)
             plt.subplot(2, 3, 2)

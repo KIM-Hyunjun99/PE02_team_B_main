@@ -71,7 +71,7 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 
 **if you click the 'Lots number',  the GUI will go to the following page.**
 
-![GUI 3](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/415199d9-e06e-461f-8475-7b6ef669034b)
+![GUI 3](./doc/images/GUI 3.PNG)
 
 5. **Date folder** : You can choose the data-folder you want.
    * You can select the coordinate of the wafer to the right of the selected wafer(e.g.,(1,1))
@@ -84,5 +84,5 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 ## Result
 
-![Graph 2](https://github.com/KIM-Hyunjun99/guswns9474/assets/128004215/d6504a23-66ea-47c6-a864-15d90a27fd1c)
+![Graph 2](./doc/images/Graph 2.png)
 

@@ -8,6 +8,7 @@ import warnings
 import pandas as pd
 import graph_individual as gi
 from tqdm import tqdm
+import TR_graph_plot
 import time
 
 def default():
@@ -68,18 +69,20 @@ def default():
                             '../res/' + data_elements[x][0] + '/' + data_elements[x][1] + '/' + data_elements[x][2] + '/' + file_name + str({",".join(graph_elements)}) + '.png', dpi=300)
                     plt.close()
         def graph_select(x, y):
+            test = TR_graph_plot.plot_TR(*data_elements[y])
+            test.data_parse()
             if graph_elements[x] == 'IV':
                 gi.IV_graph_plot(*data_elements[y])
             elif graph_elements[x] == 'TR':
                 gi.transmission_spectra(*data_elements[y])
             elif graph_elements[x] == 'Flat_TR':
-                gi.flat_TR_graph_plot(*data_elements[y])
+                test.flat_TR_graph_plot()
             elif graph_elements[x] == 'Intensity_fit':
-                gi.intensity_spectra(*data_elements[y])
+                test.fitted_TR_graph_plot()
             elif graph_elements[x] == 'Enlarged_TR_fit':
-                gi.enlarged_fitted_TR_graph(*data_elements[y])
+                test.enlarged_fitted_TR_graph()
             elif graph_elements[x] == 'Del_n_eff':
-                gi.del_n_eff_voltage(*data_elements[y])
+                test.del_n_eff_by_voltage()
 
             # tqdm 객체 생성
 
