@@ -84,3 +84,5 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ## Result
 
 ![Graph 2](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/54d5ed63-5101-4239-94b5-6fa5f4d17e9b)
+![CSV1](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/be4f488e-dfb2-4ab6-ad0a-5b37f2dc517a)
+![CSV2](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/08415712-3e11-4d21-952f-e7e6ce5029b1)
