@@ -61,6 +61,34 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 ***
 
 ## Usage
+
+### Library function required to execute code
+```python
+import xml.etree.ElementTree as elemTree
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import datetime 
+import os 
+from lmfit import Model
+import warnings
+import pandas as pd
+from tkinter import *
+import math
+```
+### Execution code for executing the entire program
+
+```python
+import GUI
+import install_module
+with open('count.txt', 'r') as f:  # txt 파일에서 숫자 데이터(돌린 횟수) 읽기
+    count = float(f.read())
+if count == 0:
+    install_module.install_all_library()
+GUI.GUI()
+```
+
+**If you run 'run.py' , the GUI window appears as follows**
+
 ![GUI 0](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/a5d0e352-335d-430c-9a09-9db125d16159)
 1. **Lots** : You can get the data by selecting the desired Lots.
 2. **Search All Lots** : You can choose the 'Search All Lots', Which is programmed for data for all Lots.
