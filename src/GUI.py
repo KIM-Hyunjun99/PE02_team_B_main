@@ -7,7 +7,6 @@ import delete_code as dc
 import produce_csv as prc
 from tkinter import *
 import tkinter as tk
-
 from tkinter import ttk
 import default as df
 import matplotlib.pyplot as plt
@@ -212,12 +211,12 @@ def GUI():
   frame3 = tk.Frame(root2)
   frame3.pack(side='bottom', anchor='w')
 
-  button6 = tk.Button(frame3, text="Search All Lots", command=lambda : (prc.create_csv(), df.default()), font=("Roboto", 10))
+  button6 = tk.Button(frame3, text="Search All Lots", command=lambda : (df.default_exe()), font=("Roboto", 10))
   button6.pack(side='left', anchor="w")
   label = tk.Label(frame3, text='       ')
   label.pack(side='left', anchor='w')
 
-  button4 = tk.Button(frame3, text="create_csv_file", command=prc.create_csv, font=("Roboto", 10))
+  button4 = tk.Button(frame3, text="create_csv_file", command=prc.csv_prc_exe, font=("Roboto", 10))
   button4.pack(side='left', anchor ="w")
   label = tk.Label(frame3, text='       ')
   label.pack(side='left', anchor='w')
