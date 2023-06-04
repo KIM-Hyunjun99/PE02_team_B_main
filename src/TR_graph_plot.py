@@ -5,8 +5,8 @@ with open('library.txt','r') as f:
 import functions as fc
 import math
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
 from scipy.signal import argrelextrema
+from matplotlib.patches import Patch
 warnings.filterwarnings('ignore',category=np.RankWarning)
 class plot_TR:
     def __init__(self,Lot,Wafer,Date,Position):
@@ -17,6 +17,7 @@ class plot_TR:
         self.label_font_properties = {'size':7,'weight':'bold'}
         self.title_font_properties = {'size':10,'weight':'bold'}
         self.max_fit = []
+        self.band_wave_len = 0
     def data_parse(self):
         self.wave_len = []
         self.wave_len_ref = np.array([])
@@ -113,8 +114,10 @@ class plot_TR:
         # print(I[bias.index(0.0)], wave_len[bias.index(0.0)])
         # print(bias)
 
+        self.R_square_TR = []
         self.del_n_eff = []
         self.fitted_TR_data = []
+        self.fit_raw_TR = []
         result_n_eff = fc.Transmission_fitting_n_eff(self.wave_len, self.I, self.bias)
         self.n_eff = result_n_eff[0]
         for bia in self.bias:
@@ -131,13 +134,34 @@ class plot_TR:
         self.legend_name = [bia for bia in [str(bia_s) + '[V]' for bia_s in self.bias]]
         self.legend_elements = [Patch(facecolor=color, edgecolor=color, label=label, linewidth=0.01) for color, label in
                                 zip(self.colors, self.legend_name)]
+
+        self.ref_index = self.bias.index(0.0)
+        self.minimum = fc.find_minimum_index(self.wave_len[self.ref_index], self.raw_trans[self.ref_index])
+        self.minimum_wave_len = [self.wave_len[self.ref_index][i] for i in self.minimum]
+        self.index_range = int(
+            (self.wave_len[0].index(self.wave_len_max[0][1]) - self.wave_len[0].index(self.wave_len_max[0][0])) / 4)
+        if 'LMZC' in self.file_name[0]:
+            self.band_wave_len = 1550
+            self.ref_wave_len_index = self.wave_len[self.ref_index].index(fc.closest_data(1550, self.minimum_wave_len))
+        elif 'LMZO' in self.file_name[0]:
+            self.band_wave_len = 1310
+            self.ref_wave_len_index = self.wave_len[self.ref_index].index(fc.closest_data(1310, self.minimum_wave_len))
+        for bia in self.bias:
+            i = self.bias.index(bia)
+            dB_fitted_TR_data = 10 * np.log10([data * 1000 for data in self.fitted_TR_data[i]])
+            self.fit_raw_TR.append([x + y + z for x, y, z in zip(dB_fitted_TR_data[(self.ref_wave_len_index - self.index_range):(self.ref_wave_len_index + self.index_range)],self.max_fit[i][(self.ref_wave_len_index - self.index_range):(self.ref_wave_len_index + self.index_range)],self.fit_trans_ref[i][
+                            (self.ref_wave_len_index - self.index_range):(self.ref_wave_len_index + self.index_range)])])
+            self.R_square_TR.append(fc.R_square(np.array(self.wave_len[i][(self.ref_wave_len_index - self.index_range):(self.ref_wave_len_index + self.index_range)]), np.array(self.raw_trans[i][(self.ref_wave_len_index - self.index_range):(
+                                    self.ref_wave_len_index + self.index_range)]),np.array(self.fit_raw_TR[i])))
+        self.R_square_TR = np.mean(np.array(self.R_square_TR))
+        self.V_piL = self.band_wave_len*10**(-9)/(self.del_n_eff[self.bias.index(-2)])
+
     def flat_TR_graph_plot(self):
         x_list = [self.wave_len,self.wave_len_max,self.wave_len]
         rep_len = len(self.bias)
         y_data_type1 = [self.minus_max_fit_trans[i] for i in range(rep_len)]
         y_data_type2 = [self.trans_max[i] for i in range(rep_len)]
         y_data_type3 = [self.max_fit[i] for i in range(rep_len)]
-
         y_data_type4 = [self.fitted_TR_data[i] for i in range(rep_len)]
         # dB_fitted_TR_data = 10 * np.log10([data * 1000 for data in self.fitted_TR_data[i]])
         labels = ['fit_ref','max_data','fit_flat_TR']
@@ -186,54 +210,28 @@ class plot_TR:
         plt.axvline(0, color='black',linestyle='dashed',linewidth=1)  # y축에 대한 수직선
         plt.xticks(fontsize=6)  # modulate axis label's fontsize
         plt.yticks(fontsize=6)
+        plt.text(0.5, 0.8, 'V_piL = {:.8f}'.format(self.V_piL), fontweight = 'bold', fontsize=7,transform=plt.gca().transAxes)
         plt.xlabel('voltage[V]', fontdict=self.label_font_properties)
         plt.ylabel(r'$\Delta$'+'n_eff', fontdict=self.label_font_properties)
         plt.title(r'$\Delta$'+'n_eff - Voltage Graph', fontdict=self.title_font_properties)
         plt.legend(loc='upper right',fontsize=6, ncol=2)
         plt.grid()
     def enlarged_fitted_TR_graph(self):
-        ref_index = self.bias.index(0.0)
-        minimum = fc.find_minimum_index(self.wave_len[ref_index], self.raw_trans[ref_index])
-        minimum_wave_len = [self.wave_len[ref_index][i] for i in minimum]
-        index_range = int((self.wave_len[0].index(self.wave_len_max[0][1]) - self.wave_len[0].index(self.wave_len_max[0][0])) / 4)
         # print(minimum_wave_len)
-        if 'LMZC' in self.file_name[0]:
-            ref_wave_len_index = self.wave_len[ref_index].index(fc.closest_data(1550, minimum_wave_len))
-        else:
-            ref_wave_len_index = self.wave_len[ref_index].index(fc.closest_data(1310, minimum_wave_len))
-
         for bia in self.bias:
             i = self.bias.index(bia)
-            dB_fitted_TR_data = 10 * np.log10([data*1000 for data in self.fitted_TR_data[i]])
-            fit_raw_TR = [ x+y+z for x,y,z in zip(dB_fitted_TR_data[(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)],
-                           self.max_fit[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)], self.fit_trans_ref[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)])]
-            plt.plot(self.wave_len[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)], fit_raw_TR, linestyle='dashed', linewidth=1,color=self.colors[i])
-            plt.plot(self.wave_len[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)],self.raw_trans[i][(ref_wave_len_index-index_range):(ref_wave_len_index+index_range)],marker='o',alpha=1,label='trans_ref',markersize=0.25,color=self.colors[i],linestyle='none')
+            plt.plot(self.wave_len[i][(self.ref_wave_len_index-self.index_range):(self.ref_wave_len_index+self.index_range)], self.fit_raw_TR[i], linestyle='dashed', linewidth=1,color=self.colors[i])
+            plt.plot(self.wave_len[i][(self.ref_wave_len_index-self.index_range):(self.ref_wave_len_index+self.index_range)],self.raw_trans[i][(self.ref_wave_len_index-self.index_range):(self.ref_wave_len_index+self.index_range)],marker='o',alpha=1,label='trans_ref',markersize=0.25,color=self.colors[i],linestyle='none')
         plt.xticks(fontsize=6)  # modulate axis label's fontsize
         plt.yticks(fontsize=6)
         plt.title('Enlarged Transmission graph (raw & fit)', fontdict=self.title_font_properties)
         plt.xlabel('wavelength[nm]', fontdict=self.label_font_properties)
         plt.ylabel('transmission[dB]', fontdict=self.label_font_properties)
+        plt.text(0.1, 0.5, 'R_square = {:.8f}'.format(self.R_square_TR), fontweight = 'bold', fontsize=7,transform=plt.gca().transAxes)
         # plt.legend(handles=self.legend_elements, fontsize=5, ncol=2, loc='upper right')
         font_props = {'weight': 'bold','size':6}
         legend1 = plt.legend(['o : raw data','-- : fitted graph'], fontsize=5, ncol=1, loc=(0.01, 0.89), handlelength=0, prop=font_props)
         plt.gca().add_artist(legend1)
-        plt.legend(handles=self.legend_elements, fontsize=6, ncol=2, loc='upper right')
-    def VpiL_plot(self):
-        for bia in self.bias:
-            if bia==0:
-                continue
-            i=self.bias.index(bia)
-            # print(fc.VpiL_data(bia, self.del_n_eff[self.bias.index(bia)], self.wave_len[self.bias.index(bia)]))
-            plt.plot(self.wave_len[i],list(fc.VpiL_data(bia, self.del_n_eff[i], self.wave_len[i])),color=self.colors[i])
-        plt.xticks(fontsize=6)  # modulate axis label's fontsize
-        plt.yticks(fontsize=6)
-        plt.title('V_piL graph', fontdict=self.title_font_properties)
-        plt.xlabel('wavelength[nm]', fontdict=self.label_font_properties)
-        plt.ylabel('V_piL[V]', fontdict=self.label_font_properties)
-        self.colors.remove(self.colors[self.bias.index(0.0)])
-        self.legend_name.remove('0.0[V]')
-        self.legend_elements = [Patch(facecolor=color, edgecolor=color, label=label, linewidth=0.01) for color, label in zip(self.colors, self.legend_name)]
         plt.legend(handles=self.legend_elements, fontsize=6, ncol=2, loc='upper right')
 
 
@@ -264,10 +262,9 @@ class plot_TR:
 # 예시 사용 방법
 # test = plot_TR('HY202103','D08','20190712_113254','(-1,-1)')
 # test.data_parse()
-# test.fitted_TR_graph_plot()
-# test.flat_TR_graph_plot()
-# test.enlarged_fitted_TR_graph()
-# plt.show()
+# # test.fitted_TR_graph_plot()
+# # test.flat_TR_graph_plot()
+# # test.enlarged_fitted_TR_graph()
+# # plt.show()
 # test.del_n_eff_by_voltage()
-# test.VpiL_plot()
 # plt.show()

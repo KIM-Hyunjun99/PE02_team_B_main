@@ -1,183 +1,385 @@
 import xml.etree.ElementTree as elemTree
-import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
 import os
 from lmfit import Model
 import warnings
 import pandas as pd
-from tkinter import *
-import functions as func
-def create_csv():
-    # poorly conditioned로 인한 에러 메세지 나타나지 않도록 하는 코드
-    warnings.filterwarnings('ignore',category=np.RankWarning)
+import graph_individual as gi
+from tqdm import tqdm
+import TR_graph_plot
+import time
+import functions as fc
+from matplotlib.patches import Patch
+import matplotlib.pyplot as plt
+import xml.etree.ElementTree as elemTree
 
-    # 변수 설정
-    I = np.array([])
-    V = np.array([])
-    WL = []
-    TR = []
-    WL_ref = []
-    TR_ref = []
-    R_square_IV = np.array([])
-    R_max_Ref = np.array([])
-    data_length_WL = np.array([])
-    data_length_TR = np.array([])
-    Lot = np.array([])
-    row = np.array([])
-    column = np.array([])
-    Operator = np.array([])
-    Script_id = np.array([])
-    Name = np.array([])
-    Wafer_name = np.array([])
-    Mask_name = np.array([])
-    TestSite = np.array([])
-    Operator = np.array([])
-    Date = np.array([])
-    Analysis_WL = np.array([])
-    Max_TR_ref = np.array([])
-    Script_version = np.array([])
-    Script_owner = np.array([])
-    DC_bias=[]  # 수정 필요 부분
-    count = 0
-    data_I_length = 0
-    file_numbers = 0
-    temp1 = 0
-    temp2 = 0
-    temp3 = 0
-    temp4 = 0 # xml 파일 순회시 마다 카운트하는 변수
-    users = {'audwl':'B1', "J Seo":'B2','junjuns':'B3','User':'B4'}
-    username = os.environ['USERNAME']
-    name = ['Lot','Wafer','Mask','TestSite','Name','Date','Script ID','Scipt Version','Script Owner','Operator','Row','Column'
-            ,'ErrorFlag','Error description','Analysis Wavelength[nm]','Rsq of Ref.spectrum(Nth)','Max_transmission of Ref.spec.(dB)','Rsq of IV','I at -1V[A]','I at 1V[A]']
 
-    # LMZ 파일만을 순회하기 위한 코드
-    # start_dir = 'C:\\Users\\audwl\\PycharmProjects\\TeamB_main\\dat'
-    start_dir = os.path.join('..','dat') # 제일 중요한 코드, '..'는 현재 디렉토리의 부모 디렉토리를 반환해주는 코드, 그걸 data_file과 연결
-    file_paths = [] # 전체 파일 경로를 원소로 가지는 리스트 변수 초기화
+class csv_class:
+    def __init__(self,Lot,Wafer,Date,Position):
+        self.Lot = Lot
+        self.Wafer = Wafer
+        self.Date = Date
+        self.Position = Position
+        self.label_font_properties = {'size':7,'weight':'bold'}
+        self.title_font_properties = {'size':10,'weight':'bold'}
+        self.max_fit = []
+        self.band_wave_len = 0
+        self.I = np.array([])
+        self.V = np.array([])
+        self.Operator = ''
+        self.R_square_IV = 0
+        self.R_max_Ref = 0
+        self.Lot_excel = ''
+        self.column = ''
+        self.Script_id = ''
+        self.Name = ''
+        self.wafer_name = ''
+        self.Mask_name = ''
+        self.Testsite = ''
+        self.Date_csv = ''
+        self.Analysis_WL = 0
+        self.Max_TR_ref = 0
+        self.I_n_1V = 0
+        self.I_p_lV = 0
+        self.I = np.array([])
+        self.V = np.array([])
+        self.Error_flag = 0
+        self.Error_dsc = ''
+        self.temp1 = 0
+        self.temp2 = 0
+        self.temp3 = 0
+        self.temp4 = 0
+        self.users = {'audwl': 'B1', "J Seo": 'B2', 'junjuns': 'B3', 'User': 'B4'}
+        self.username = os.environ['USERNAME']
+        self.name = ['Lot','Wafer','Mask','TestSite','Name','Date','Script ID','Scipt Version','Script Owner','Operator','Row','Column'
+            ,'ErrorFlag','Error description','Analysis Wavelength[nm]','Rsq of Ref.spectrum(Nth)','Max_transmission of Ref.spec.(dB)','Rsq of IV','I at -1V[A]','I at 1V[A]','V_piL[V]','rsq of TR','n_eff']
 
-    # dat 디렉토리와 그 하위 디렉토리를 순회하면서 파일 경로를 검색
-    for dirpath, dirnames, filenames in os.walk(start_dir):
-        for filename in filenames:
-            if '_LMZ' in filename and filename.endswith('.xml'):
-                file_paths.append(os.path.join(dirpath,filename))
-    print(file_paths)
-    file_numbers = len(file_paths)
-
-    for file_name in file_paths:
-        # xml 파일 파싱이 반복될 때마다 또 사용해야 되기 때문에 counting 변수 반복시마다 0으로 초기화
+    def data_parse(self):
+        self.wave_len = []
+        self.wave_len_ref = np.array([])
+        self.raw_trans = []
+        self.minus_ref_trans = []
+        self.minus_max_fit_trans = []
+        wave_len_half = []
+        trans_half = []
+        self.trans_ref = np.array([])
+        self.wave_len_max = []
+        self.trans_max = []
+        self.fit_trans_ref = []
+        self.bias = []
+        self.Intensity = []
+        # smoothed_trans = np.array([])
         temp1 = 0
         temp2 = 0
-        temp3 = 0
-        WL_temp = []
-        TR_temp = []
 
-        tree = elemTree.parse(file_name)
+        path = os.path.join('..','dat',self.Lot,self.Wafer,self.Date)
+        self.file_name = [os.path.join(path, f) for f in os.listdir(path) if 'LMZ' in f and f.endswith('.xml') and self.Position in f]
+
+        tree = elemTree.parse(self.file_name[0])
         root = tree.getroot()
-    # 전류, 전압 데이터 추출
         for current in root.iter('Current'):
-            I = np.append(I, abs(np.array(list(map(float, current.text.split(','))))))
+            self.I = np.array(abs(np.array(list(map(float, current.text.split(','))))))
         for voltage in root.iter('Voltage'):
-            V = np.append(V, list(map(float, voltage.text.split(','))))
-            data_I_length = np.array(list(map(float, voltage.text.split(',')))).size
-        for MD in root.iter('Modulator'):
-            if temp1 == 0:
-                Name = np.append(Name, [MD.find('DeviceInfo').attrib['Name']])
-    # WL, TR, DC bias 데이터 추출
-            for WL_sweep in MD.iter('WavelengthSweep'):
-                if temp1 == 1:
-                    WL_ref.append(list(map(float, WL_sweep.find('L').text.split(','))))
-                    TR_ref.append(list(map(float, WL_sweep.find('IL').text.split(','))))
-                    Max_TR_ref = np.append(Max_TR_ref,np.array([max(list(map(float, WL_sweep.find('IL').text.split(','))))]))
-                    data_WL_length = np.array(list(map(float, WL_sweep.find('L').text.split(',')))).size
-                    WL.append([WL_temp])
-                    TR.append([TR_temp])
+            self.V = np.array(list(map(float, voltage.text.split(','))))
+        for modulator in root.iter('Modulator'):
+            for WL_sweep in modulator.iter('WavelengthSweep'):
+                if temp1 == 0:
+                    self.Name = modulator.find('DeviceInfo').attrib['Name']
+                elif temp1 == 1:
+                    self.wave_len_ref = np.append(self.wave_len_ref, np.array(list(map(float, WL_sweep.find('L').text.split(',')))))
+                    self.trans_ref = np.append(self.trans_ref, np.array(list(map(float, WL_sweep.find('IL').text.split(',')))))
                     continue
-                WL_temp.append(list(map(float, WL_sweep.find('L').text.split(','))))
-                TR_temp.append(list(map(float, WL_sweep.find('IL').text.split(','))))
-                if temp4==0:
-                    DC_bias.append(WL_sweep.attrib['DCBias'])
-            temp1+=1
-    # TestSiteInfo에서 구할 수 있는 데이터 추출
+                self.wave_len.append(list(map(float, WL_sweep.find('L').text.split(','))))
+                self.raw_trans.append(list(map(float, WL_sweep.find('IL').text.split(','))))
+                self.bias.append(float(WL_sweep.attrib['DCBias']))
+                temp2 += 1
+            temp1 += 1
+        self.Max_TR_ref = max(self.trans_ref)
+        # TestSiteInfo에서 구할 수 있는 데이터 추출
         for i in root.iter('TestSiteInfo'):
-            Lot = np.append(Lot,[i.attrib['Batch']])
-            Wafer_name = np.append(Wafer_name,[i.attrib['Wafer']])
-            Mask_name = np.append(Mask_name,[i.attrib['Maskset']])
-            TestSite = np.append(TestSite,[i.attrib['TestSite']])
-            column = np.append(column,[i.attrib['DieColumn']])
-            row = np.append(row,[i.attrib['DieRow']])
-    # Analysis_WL 데이터 추출
-        for i in root.iter('DesignParameters'):
-            if temp2 == 0:
-                for k in i.iter('DesignParameter'):
-                    if temp3 == 1:
-                        Analysis_WL = np.append(Analysis_WL,[k.text])
-                    temp3 += 1
-            temp2 += 1
-    # 날짜 data 추출
+            self.Lot_excel = i.attrib['Batch']
+            self.wafer_name = i.attrib['Wafer']
+            self.Mask_name = i.attrib['Maskset']
+            self.Testsite = i.attrib['TestSite']
+            self.column = i.attrib['DieColumn']
+            self.row = i.attrib['DieRow']
+        # Analysis_WL 데이터 추출
+            for i in root.iter('DesignParameters'):
+                if self.temp2 == 0:
+                    for k in i.iter('DesignParameter'):
+                        if self.temp3 == 1:
+                            self.Analysis_WL = k.text
+                        self.temp3 += 1
+                self.temp2 += 1
+        # 날짜 data 추출
         for i in root.iter('OIOMeasurement'):
             date_str = i.attrib['CreationDate']
             dt = datetime.strptime(date_str,'%a %b %d %H:%M:%S %Y')
-            Date = np.append(Date, dt.strftime('%Y%m%d-%H%M%S'))
-            Operator = np.append(Operator, i.attrib['Operator'])
-        temp4+=1
-    # 적절한 shape으로 데이터 행렬 변환
-    I = I.reshape(len(file_paths),data_I_length)
-    V = V.reshape(len(file_paths),data_I_length)
-    # WL = WL.reshape(len(file_paths), int(WL.size/WL_ref.size), data_WL_length)
-    # TR = TR.reshape(len(file_paths), int(WL.size/WL_ref.size), data_WL_length)
-    # WL_ref = WL_ref.reshape(len(file_paths), data_WL_length)
-    # TR_ref = TR_ref.reshape(len(file_paths), data_WL_length)
-    I_n_1V = I[:,np.where(V == -1)[1][0]].reshape(file_numbers,1) # 1V에 대한 열 데이터 전체를 가져온 변수
-    I_p_1V = I[:,np.where(V == 1)[1][0]].reshape(file_numbers,1) # -1V에 대한 열 데이터 전체를 가져온 변수
-    Max_TR_ref = Max_TR_ref.reshape(file_numbers,1)
-    Lot = Lot.reshape(file_numbers,1)
-    Wafer_name = Wafer_name.reshape(file_numbers,1)
-    Analysis_WL = Analysis_WL.reshape(file_numbers,1)
-    TestSite = TestSite.reshape(file_numbers,1)
-    Name = Name.reshape(file_numbers,1)
-    Date = Date.reshape(file_numbers,1)
-    Mask_name = Mask_name.reshape(file_numbers,1)
-    Operator = Operator.reshape(file_numbers,1)
-    Script_id = np.array(list('process '+row[0][-4:-1] for row in TestSite)).reshape(file_numbers,1)
-    row = row.reshape(file_numbers,1)
-    column = column.reshape(file_numbers,1)
+            self.Date = dt.strftime('%Y%m%d-%H%M%S')
+            self.Operator = i.attrib['Operator']
 
-    # 데이터 추출하고 나서 만들어야 하는 데이터 생성
-    for i in range(I.shape[0]):
-        R_square_IV = np.append(R_square_IV, func.shockely_diode_IV_fit_R(V[i],I[i]))
-    R_square_IV = R_square_IV.reshape(file_numbers,1)
+        # 데이터 추출하고 나서 만들어야 하는 데이터 생성
+        self.R_square_IV = fc.shockely_diode_IV_fit_R(self.V, self.I)
+        self.R_max_Ref = fc.Best_fit_R(np.array(self.wave_len_ref),np.array(self.trans_ref))
+        self.I_n_1V = self.I[list(self.V).index(-1)]
+        # print(self.I_n_1V)
+        self.I_p_1V = self.I[list(self.V).index(1)]
+        s = 150
+        self.fit_trans_ref_real = fc.Ref_fitted_func(self.wave_len_ref, self.trans_ref)(self.wave_len_ref)
+        for i in range(len(self.wave_len)):
+            self.fit_trans_ref.append(fc.Ref_fitted_func(self.wave_len_ref, self.trans_ref)(self.wave_len[i]))
+            self.minus_ref_trans.append([(x - y) for x,y in zip(self.raw_trans[i],self.fit_trans_ref[i])])
+            # plt.plot(wave_len[i],trans[i])
+            # print(len(self.minus_ref_trans[i][0]),len(self.wave_len[0]))
+            trans_half_temp = []
+            wave_len_half_temp = []
+            for k in range(len(self.wave_len[i])):
+                count = 0
+                if k >= (len(self.wave_len[i]) - (s + 1)):
+                    continue
+                for g in range(1, (s + 1)):
+                    if self.minus_ref_trans[i][k] > self.minus_ref_trans[i][k + g]:
+                        count += 1
+                if count >= s - 3:
+                    trans_half_temp.append(self.minus_ref_trans[i][k])
+                    wave_len_half_temp.append(self.wave_len[i][k])
+            wave_len_half.append(wave_len_half_temp)
+            trans_half.append(trans_half_temp)
+            # plt.plot(wave_len_half[i],trans_half[i],'ro',markersize=0.5)#######
+        # plt.show()
 
-    for i in range(len(WL_ref)):
-        R_max_Ref = np.append(R_max_Ref, func.Best_fit_R(np.array(WL_ref[i]),np.array(TR_ref[i])))
-    R_max_Ref = R_max_Ref.reshape(file_numbers,1)
+        for i in range(len(wave_len_half)):
+            wave_len_max_temp = []
+            trans_max_temp = []
+            for j in range(len(wave_len_half[i])):
+                if j == 0:
+                    wave_len_max_temp.append(wave_len_half[i][j])
+                    trans_max_temp.append(trans_half[i][j])
+                    continue
+                elif j >= len(wave_len_half[i]) - 4:
+                    continue
+                if (wave_len_half[i][j + 2] - wave_len_half[i][j + 1]) >= (
+                        wave_len_half[i][j + 1] - wave_len_half[i][j] + 4):
+                    wave_len_max_temp.append(wave_len_half[i][j + 2])
+                    trans_max_temp.append(trans_half[i][j + 2])
 
-    Error_flag = np.array(list( 0 if x >= 0.95 else 1 for x in list(R_max_Ref))).reshape(file_numbers,1)
-    Error_dsc = np.array(list( 'No Error' if x == 0 else 'Ref. spec. Error' for x in list(Error_flag))).reshape(file_numbers,1)
+            if trans_max_temp[0] < trans_max_temp[1] + 0.5:
+                self.wave_len_max.append(wave_len_max_temp[1:])
+                self.trans_max.append(trans_max_temp[1:])
+            else:
+                self.wave_len_max.append(wave_len_max_temp)
+                self.trans_max.append(trans_max_temp)
 
-    # 코드를 돌린 횟수를 적립하는 코드
-    try:
-        with open('count.txt','r') as f: # txt 파일에서 숫자 데이터(돌린 횟수) 읽기
-            count = float(f.read())
-            count += 0.1
-    except FileNotFoundError: # 처음에 아무 아무 숫자가 없어 생기는 오류 방지
-        with open('count.txt','w') as f:
+            # print(wave_len_max_temp,trans_max_temp)
+            # plt.plot(wave_len_max[i],trans_max[i],'ro')
+            # plt.plot(wave_len[i],fc.flat_fit_function(np.array(wave_len_max[i]), np.array(trans_max[i]))(wave_len[i]))
+            self.max_fit.append(fc.flat_fit_function(np.array(self.wave_len_max[i]), np.array(self.trans_max[i]))(self.wave_len[i]))
+            self.minus_max_fit_trans.append([x-y for x,y in zip(self.minus_ref_trans[i],self.max_fit[i])])  # flatten 한 데이터들로 다시 trans 변수를 할당
+            # plt.plot(wave_len[i],trans[i],'b-')
+            self.Intensity.append([10 ** (x / 10) / 1000 for x in self.minus_max_fit_trans[i]])
+        # print(I)
+        # for i in range(temp2):
+        #     plt.plot(self.wave_len[i],self.I[i],marker='o',alpha=0.4,markersize=1)
+        # 극댓값 정보를 찾기 -> 여러개 시도
+        # print(I[bias.index(0.0)], wave_len[bias.index(0.0)])
+        # print(bias)
+        self.R_square_TR = []
+        self.fit_raw_TR = []
+        self.del_n_eff = []
+        self.fitted_TR_data = []
+        result_n_eff = fc.Transmission_fitting_n_eff(self.wave_len, self.Intensity, self.bias)
+        self.n_eff = result_n_eff[0]
+        for bia in self.bias:
+            if bia == 0.0:
+                self.del_n_eff.append(0.0)
+                self.fitted_TR_data.append(result_n_eff[1])
+                continue
+            result_del_n_eff = fc.Transmission_fitting_n_eff_V(self.wave_len, self.Intensity, self.n_eff, self.bias, bia)
+            self.del_n_eff.append(result_del_n_eff[0])
+            self.fitted_TR_data.append(result_del_n_eff[1])
+            # plt.plot(self.wave_len[self.bias.index(bia)],self.fitted_TR_data[self.bias.index(bia)],linestyle='dashed')
+        self.colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+        self.colors = self.colors[:len(self.bias)]
+        self.legend_name = [bia for bia in [str(bia_s) + '[V]' for bia_s in self.bias]]
+        self.legend_elements = [Patch(facecolor=color, edgecolor=color, label=label, linewidth=0.01) for color, label in
+                                zip(self.colors, self.legend_name)]
+        self.ref_index = self.bias.index(0.0)
+        self.minimum = fc.find_minimum_index(self.wave_len[self.ref_index], self.raw_trans[self.ref_index])
+        self.minimum_wave_len = [self.wave_len[self.ref_index][i] for i in self.minimum]
+        self.index_range = int(
+            (self.wave_len[0].index(self.wave_len_max[0][1]) - self.wave_len[0].index(self.wave_len_max[0][0])) / 4)
+        # print(minimum_wave_len)
+        if 'LMZC' in self.file_name[0]:
+            self.band_wave_len = 1550
+            self.ref_wave_len_index = self.wave_len[self.ref_index].index(fc.closest_data(1550, self.minimum_wave_len))
+        elif 'LMZO' in self.file_name[0]:
+            self.band_wave_len = 1310
+            self.ref_wave_len_index = self.wave_len[self.ref_index].index(fc.closest_data(1310, self.minimum_wave_len))
+        for bia in self.bias:
+            i = self.bias.index(bia)
+            dB_fitted_TR_data = 10 * np.log10([data * 1000 for data in self.fitted_TR_data[i]])
+            self.fit_raw_TR.append([x + y + z for x, y, z in zip(dB_fitted_TR_data[(self.ref_wave_len_index - self.index_range):(self.ref_wave_len_index + self.index_range)],self.max_fit[i][(self.ref_wave_len_index - self.index_range):(self.ref_wave_len_index + self.index_range)],self.fit_trans_ref[i][
+                            (self.ref_wave_len_index - self.index_range):(self.ref_wave_len_index + self.index_range)])])
+            self.R_square_TR.append(fc.R_square(np.array(self.wave_len[i][(self.ref_wave_len_index-self.index_range):(self.ref_wave_len_index+self.index_range)]),np.array(self.raw_trans[i][(self.ref_wave_len_index-self.index_range):(self.ref_wave_len_index+self.index_range)]),np.array(self.fit_raw_TR[i])))
+        self.R_square_TR = np.mean(np.array(self.R_square_TR))
+        self.V_piL = self.band_wave_len * 10 ** (-9) / (self.del_n_eff[self.bias.index(-2)])
+# ------------------------------------------------------------------------------------------------------------------------ Error flag, Error dsc 할당
+        if self.R_max_Ref < 0.95:
+            self.Error_flag += 1
+            if self.Error_dsc == '':
+                self.Error_dsc += 'IV_fit_error'
+            else:
+                self.Error_dsc += ',IV_fit_error'
+        if self.R_square_TR < 0.9:
+            self.Error_flag += 1
+            if self.Error_dsc == '':
+                self.Error_dsc += 'TR_fit_error'
+            else:
+                self.Error_dsc += ',TR_fit_error'
+        if self.V_piL < 0:
+            self.Error_flag += 1
+            if 'TR_fit_error' not in self.Error_dsc:
+                if self.Error_dsc == '':
+                    self.Error_dsc += 'device_error'
+                else:
+                    self.Error_dsc += ',device_error'
+            else:
+                if self.Error_dsc == '':
+                    self.Error_dsc += 'V_piL_error by TR_fit'
+                else:
+                    self.Error_dsc += ',V_piL_error by TR_fit'
+        if self.Error_flag == 0:
+            self.Error_dsc += 'No error'
+class csv:
+    def __init__(self):
+        start_dir = os.path.join('..', 'dat')  # 제일 중요한 코드, '..'는 현재 디렉토리의 부모 디렉토리를 반환해주는 코드, 그걸 data_file과 연결
+        self.file_paths = []  # 전체 파일 경로를 원소로 가지는 리스트 변수 초기화
+        self.name = ['Lot', 'Wafer', 'Mask', 'TestSite', 'Name', 'Date', 'Script ID', 'Scipt Version', 'Script Owner',
+                     'Operator', 'Row', 'Column'
+            , 'ErrorFlag', 'Error description', 'Analysis Wavelength[nm]', 'Rsq of Ref.spectrum(Nth)',
+                     'Max_transmission of Ref.spec.(dB)', 'Rsq of IV', 'I at -1V[A]', 'I at 1V[A]', 'V_piL[V]','rsq of TR','n_eff']
+
+        # dat 디렉토리와 그 하위 디렉토리를 순회하면서 파일 경로를 수집
+        for dirpath, dirnames, filenames in os.walk(start_dir):
+            for filename in filenames:
+                if '_LMZ' in filename and filename.endswith('.xml'):
+                    self.file_paths.append(os.path.join(dirpath, filename))
+
+        def convert_list(file_names):
+            converted_list = []
+            for file_name in file_names:
+                lot_data = file_name.split('\\')[2]
+                folder_name = file_name.split('\\')[3]
+                timestamp = file_name.split('\\')[4]
+                coordinates = file_name.split('\\')[-1].split('_')[2]
+                converted_list.append((lot_data, folder_name, timestamp, coordinates))
+            return converted_list
+
+        self.default_list = convert_list(self.file_paths)
+    def run_csv(self):
+        Lot = np.array([])
+        Wafer_name = np.array([])
+        Mask_name = np.array([])
+        TestSite = np.array([])
+        Date = np.array([])
+        Script_id = np.array([])
+        Script_version = np.array([])
+        Script_owner = np.array([])
+        Operator = np.array([])
+        Name = np.array([])
+        row = np.array([])
+        column = np.array([])
+        Error_flag = np.array([])
+        Error_dsc = np.array([])
+        Analysis_WL = np.array([])
+        R_max_Ref = np.array([])
+        Max_TR_ref = np.array([])
+        R_square_IV = np.array([])
+        I_n_1V = np.array([])
+        I_p_1V = np.array([])
+        progress_bar = tqdm(total=len(self.file_paths))
+        V_piL = np.array([])
+        R_square_TR = np.array([])
+        users = np.array([])
+        n_eff = np.array([])
+
+        for file_name in self.default_list:
+            # print(self.file_name)
+            object = csv_class(*file_name)
+            object.data_parse()
+            Lot = np.append(Lot, object.Lot_excel)
+            Wafer_name = np.append(Wafer_name, object.wafer_name)
+            Mask_name = np.append(Mask_name, object.Mask_name)
+            TestSite = np.append(TestSite, object.Testsite)
+            Date = np.append(Date,object.Date)
+            Script_id = np.append(Script_id,'process ' + object.Testsite[-4:-1])
+            Operator = np.append(Operator,object.Operator)
+            row = np.append(row,object.row)
+            column = np.append(column,object.column)
+            Error_flag = np.append(Error_flag,object.Error_flag)
+            Error_dsc = np.append(Error_dsc,object.Error_dsc)
+            Name = np.append(Name,object.Name)
+            Analysis_WL = np.append(Analysis_WL,object.Analysis_WL)
+            R_max_Ref = np.append(R_max_Ref, object.R_max_Ref)
+            Max_TR_ref = np.append(Max_TR_ref,object.Max_TR_ref)
+            R_square_IV = np.append(R_square_IV,object.R_square_IV)
+            I_n_1V = np.append(I_n_1V,object.I_n_1V)
+            I_p_1V = np.append(I_p_1V,object.I_p_1V)
+            V_piL = np.append(V_piL,object.V_piL)
+            R_square_TR = np.append(R_square_TR,object.R_square_TR)
+            users = np.append(users,object.users[object.username])
+            n_eff = np.append(n_eff,object.n_eff)
+            progress_bar.update(1)
+
+        data_len = len(self.default_list)
+        Lot = Lot.reshape(data_len,1)
+        Wafer_name = Wafer_name.reshape(data_len,1)
+        Mask_name = Mask_name.reshape(data_len,1)
+        TestSite = TestSite.reshape(data_len,1)
+        Date = Date.reshape(data_len,1)
+        Name = Name.reshape(data_len,1)
+        Operator = Operator.reshape(data_len,1)
+        row = row.reshape(data_len,1)
+        column = column.reshape(data_len,1)
+        Script_id = Script_id.reshape(data_len,1)
+        Error_flag = Error_flag.reshape(data_len,1)
+        Error_dsc = Error_dsc.reshape(data_len,1)
+        Analysis_WL = Analysis_WL.reshape(data_len,1)
+        R_max_Ref = R_max_Ref.reshape(data_len,1)
+        Max_TR_ref = Max_TR_ref.reshape(data_len,1)
+        R_square_IV = R_square_IV.reshape(data_len,1)
+        I_n_1V = I_n_1V.reshape(data_len,1)
+        I_p_1V = I_p_1V.reshape(data_len,1)
+        V_piL = V_piL.reshape(data_len,1)
+        R_square_TR = R_square_TR.reshape(data_len,1)
+        n_eff = n_eff.reshape(data_len,1)
+        users = users.reshape(data_len,1)
+
+        # 엑셀 파일을 만드는 코드
+        try:
+            with open('count.txt','r') as f: # txt 파일에서 숫자 데이터(돌린 횟수) 읽기
+                count = float(f.read())
+                count += 0.1
+        except FileNotFoundError: # 처음에 아무 아무 숫자가 없어 생기는 오류 방지
+            with open('count.txt','w') as f:
+                f.write(str(count))
+
+        with open('count.txt','w') as f: # +0.1이 된 횟수를 다시 작성(w는 원래 있던 데이터를 삭제하고 다시 씀)
             f.write(str(count))
 
-    with open('count.txt','w') as f: # +0.1이 된 횟수를 다시 작성(w는 원래 있던 데이터를 삭제하고 다시 씀)
-        f.write(str(count))
+        Script_version = np.full((data_len, 1), count)
+        Script_owner = users
 
-    Script_version = np.full((file_numbers,1),count)
-    Script_owner = np.full((file_numbers,1),users[username])
+        df = pd.DataFrame(
+            np.hstack([Lot, Wafer_name, Mask_name, TestSite, Name, Date, Script_id, Script_version, Script_owner
+                          , Operator, row, column, Error_flag, Error_dsc, Analysis_WL, R_max_Ref, Max_TR_ref,
+                       R_square_IV, I_n_1V, I_p_1V,V_piL,R_square_TR,n_eff]), columns=self.name)
+        df.to_csv(os.path.join('../res', 'PE02_LMZ_excel_data.csv'), index=False)
+        progress_bar.close()
+def csv_prc_exe():
+    main_object = csv()
+    main_object.run_csv()
 
-    # 모든 데이터를 통합하여 DataFrame을 만들고 이를 csv 파일로 만드는 코드
-    # DataFrame은 2차원 배열 만을 입력인자로 받기 때문에 가로로 행렬을 더해주는 hstack을 이용해 (45,1) size의 행렬들을 합쳐 2차원 배열형태로 정리
-    df = pd.DataFrame(np.hstack([Lot,Wafer_name,Mask_name,TestSite,Name,Date,Script_id,Script_version,Script_owner
-                                 ,Operator,row,column,Error_flag,Error_dsc,Analysis_WL,R_max_Ref,Max_TR_ref,R_square_IV
-                                 ,I_n_1V,I_p_1V]),columns=name)
-    # res라는 폴더가 없다면 폴더를 만들고 그 안에 csv 파일 생성
+# csv_prc_exe()
 
-    if not os.path.exists('../res'):
-        os.makedirs('../res')
-
-    df.to_csv(os.path.join('../res','PE02_LMZ_excel_data.csv'),index=False)

@@ -7,7 +7,6 @@ from lmfit import Model
 import warnings
 import pandas as pd
 import graph_individual as gi
-import produce_csv as pc
 from tqdm import tqdm
 
 def graph(x):
