@@ -1,7 +1,8 @@
 # 라이브러리 import
 import os
-with open('library.txt','r') as f:
-    for library in f:        exec(library)
+with open('src/library.txt','r') as f:
+    for library in f:
+        exec(library)
 from lmfit import Parameters, minimize
 
 def fit_data(X,Y,N):
@@ -78,7 +79,7 @@ def shockely_diode_IV_fit(V,I):
 
     # 초기 매개 변수 설정
     params = model.make_params(
-        rev_sat_I=1e-15,
+        rev_sat_I=1e-7,
         n=1
     )
 
@@ -197,7 +198,7 @@ def Transmission_fitting_n_eff_V(wave_length,intensity,n_eff,bias,bia):
 
     # 초기 매개 변수 설정
     params = model.make_params(
-        del_n_eff = 0.00001
+        del_n_eff = 0.0001
     )
     # 모델 피팅
     result = model.fit(intensity[bias.index(bia)], params, wave_length=wave_length[bias.index(bia)])

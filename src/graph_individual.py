@@ -1,20 +1,14 @@
 import xml.etree.ElementTree as elemTree
 import matplotlib.pyplot as plt
 import numpy as np
-from datetime import datetime
 import os
-from lmfit import Model
-import warnings
-import pandas as pd
-from tkinter import *
-import math
-import functions as func
-import TR_graph_plot
+from src import functions as func
+from src import TR_graph_plot
 
 def IV_graph_plot(A, X, Y, Z):
-    for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
+    for file_name in os.listdir(os.path.join('dat', A, X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
+            tree = elemTree.parse(os.path.join('dat', A, X, Y, file_name))
             root = tree.getroot()
         else:
             continue
@@ -50,9 +44,9 @@ def IV_graph_plot(A, X, Y, Z):
 
 
 def transmission_spectra(A, X, Y, Z):
-    for file_name in os.listdir(os.path.join('../dat', A,  X, Y)):
+    for file_name in os.listdir(os.path.join('dat', A,  X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
+            tree = elemTree.parse(os.path.join('dat', A, X, Y, file_name))
             root = tree.getroot()
         else:
             continue
@@ -85,9 +79,9 @@ def transmission_spectra(A, X, Y, Z):
 
 
 def transmission_rsquare(A,X,Y,Z):
-    for file_name in os.listdir(os.path.join('../dat', A, X, Y)):
+    for file_name in os.listdir(os.path.join('dat', A, X, Y)):
         if Z in file_name and 'LMZ' in file_name:
-            tree = elemTree.parse(os.path.join('../dat', A, X, Y, file_name))
+            tree = elemTree.parse(os.path.join('dat', A, X, Y, file_name))
             root = tree.getroot()
         else:
             continue
