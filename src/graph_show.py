@@ -6,7 +6,8 @@ import os
 from lmfit import Model
 import warnings
 import pandas as pd
-import graph_individual as gi
+from src import graph_individual as gi
+from src import produce_csv as pc
 from tqdm import tqdm
 
 def graph(x):
@@ -24,14 +25,14 @@ def graph(x):
     k = len(graph_elements)
 
     def graph_saving(x):
-        for file_name in os.listdir(os.path.join('../dat', data_elements[x][0], data_elements[x][1], data_elements[x][2])):
+        for file_name in os.listdir(os.path.join('dat', data_elements[x][0], data_elements[x][1], data_elements[x][2])):
             if data_elements[x][3] in file_name and 'LMZ' in file_name:
-                if not os.path.exists("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
-                    os.makedirs("../res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
+                if not os.path.exists("res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]):
+                    os.makedirs("res/" + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2])
                 if k == 6:
-                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + '.png', dpi = 300)
+                    plt.savefig('res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + '.png', dpi = 300)
                 else:
-                    plt.savefig('../res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + str({",".join(graph_elements)}) + '.png', dpi = 300)
+                    plt.savefig('res/' + data_elements[x][0] +'/'+data_elements[x][1]+'/'+data_elements[x][2]+'/'+ file_name + str({",".join(graph_elements)}) + '.png', dpi = 300)
     def graph_select(x,y): # 'IV', 'TR', 'Flat_TR', 'Intensity_fit','Enlarged_TR_fit','Del_n_eff'
         if graph_elements[x] == 'IV':
             gi.IV_graph_plot(*data_elements[y])
@@ -56,6 +57,7 @@ def graph(x):
             plt.clf()
             graph_select(0,i)
             graph_saving(i)
+            progress_bar.update(1)
             plt.show()
         elif k == 2:
             fig = plt.figure(figsize=(16, 4.5))
@@ -66,6 +68,7 @@ def graph(x):
             graph_select(1,i)
             plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
+            progress_bar.update(1)
             plt.show()
         elif k == 3:
             fig = plt.figure(figsize=(16, 4.5))
@@ -78,6 +81,7 @@ def graph(x):
             graph_select(2, i)
             plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
+            progress_bar.update(1)
             plt.show()
         elif k == 4:
             fig = plt.figure(figsize=(12, 12))
@@ -92,6 +96,7 @@ def graph(x):
             graph_select(3,i)
             plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
+            progress_bar.update(1)
             plt.show()
         elif k == 5:
             fig = plt.figure(figsize=(16, 9))
@@ -108,6 +113,7 @@ def graph(x):
             graph_select(4, i)
             plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
+            progress_bar.update(1)
             plt.show()
         elif k == 6:
             fig = plt.figure(figsize=(16, 9))
@@ -126,8 +132,9 @@ def graph(x):
             graph_select(5, i)
             plt.subplots_adjust(top=0.9, bottom=0.1, left=0.1, right=0.9, hspace=0.4, wspace=0.4)
             graph_saving(i)
+            progress_bar.update(1)
             plt.show()
-        progress_bar.update(1)
+
 
     progress_bar.close()
 

@@ -1,14 +1,14 @@
 import tkinter.messagebox as messagebox
 import os
 import numpy as np
-import graph_show as gs
+from src import graph_show as gs
 import shutil
-import delete_code as dc
-import produce_csv as prc
+from src import delete_code as dc
+from src import produce_csv as prc
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
-import default as df
+from src import default as df
 import matplotlib.pyplot as plt
 
 
@@ -24,14 +24,14 @@ def GUI():
     n = 0
 
     # data_file 디렉토리와 그 하위 디렉토리를 순회하면서 파일 경로를 검색
-    for dirpath, dirnames, filenames in os.walk('../dat'):
+    for dirpath, dirnames, filenames in os.walk('dat'):
       n += 1
       if n >= 2 and q == dirpath.replace('\\', '/'):
         wafer_list.append(dirnames)
       if n > 2 and dirnames != [] and q+'/' in dirpath.replace('\\', '/'):
         date_list.append(dirnames)
 
-    for dirpath, dirnames, filenames in os.walk('../dat'):
+    for dirpath, dirnames, filenames in os.walk('dat'):
       filelist1 = []
       for filename in filenames:
         if 'LMZ' in filename and filename.endswith('.xml')and q+'/' in dirpath.replace('\\', '/'):
@@ -124,12 +124,12 @@ def GUI():
             if c.get()=='All':
               li= globals()['list4{}'.format(value1)]
               for d in li[0:len(li)-1]:
-                selected.append((q.replace('../dat/', ''), key, value1, d))
+                selected.append((q.replace('dat/', ''), key, value1, d))
 
             elif c.get() != 'All':
 
             # 체크 된 값이 있다면 유효한 선택이 있었다는 횟수 d를 1올리고 최종 선택 리스트에 key, value1, 콤보박스 설정값을 추가.
-              selected.append((q.replace('../dat/',''), key, value1, c.get()))
+              selected.append((q.replace('dat/',''), key, value1, c.get()))
 
           elif var.get() ==True and c.get() == '선택가능':  # 날짜는 선택되었지만 콤보박스가 설정되지 않았다면 오류메시지 띄움
             de += 1
@@ -185,7 +185,7 @@ def GUI():
   n = 0
   lot_list = []
   # data_file 디렉토리와 그 하위 디렉토리를 순회하면서 파일 경로를 검색
-  for dirpath, dirnames, filenames in os.walk('../dat'):
+  for dirpath, dirnames, filenames in os.walk('dat'):
     n += 1
     if n == 1:
       lot_list = dirnames
@@ -202,7 +202,7 @@ def GUI():
   for i in lot_list:
     label = tk.Label(root2, text='   ')
     label.pack(side='left', anchor='w')
-    globals()['variable5{}'.format(i)] = '../dat/'+i
+    globals()['variable5{}'.format(i)] = 'dat/'+i
     globals()['button5{}'.format(i)] = tk.Button(root2, text=i, command=lambda v=i: (root2.destroy(), GUI1(globals()['variable5{}'.format(v)])), font=("Roboto", 10))
     globals()['button5{}'.format(i)].pack(side='left')
 

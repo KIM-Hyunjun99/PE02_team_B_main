@@ -5,11 +5,11 @@ import os
 from lmfit import Model
 import warnings
 import pandas as pd
-import graph_individual as gi
+from src import graph_individual as gi
 from tqdm import tqdm
-import TR_graph_plot
+from src import TR_graph_plot
 import time
-import functions as fc
+from src import functions as fc
 from matplotlib.patches import Patch
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as elemTree
@@ -73,7 +73,7 @@ class csv_class:
         temp1 = 0
         temp2 = 0
 
-        path = os.path.join('..','dat',self.Lot,self.Wafer,self.Date)
+        path = os.path.join('dat',self.Lot,self.Wafer,self.Date)
         self.file_name = [os.path.join(path, f) for f in os.listdir(path) if 'LMZ' in f and f.endswith('.xml') and self.Position in f]
 
         tree = elemTree.parse(self.file_name[0])
@@ -253,7 +253,7 @@ class csv_class:
             self.Error_dsc += 'No error'
 class csv:
     def __init__(self):
-        start_dir = os.path.join('..', 'dat')  # 제일 중요한 코드, '..'는 현재 디렉토리의 부모 디렉토리를 반환해주는 코드, 그걸 data_file과 연결
+        start_dir = os.path.join('dat')  # 제일 중요한 코드, '..'는 현재 디렉토리의 부모 디렉토리를 반환해주는 코드, 그걸 data_file과 연결
         self.file_paths = []  # 전체 파일 경로를 원소로 가지는 리스트 변수 초기화
         self.name = ['Lot', 'Wafer', 'Mask', 'TestSite', 'Name', 'Date', 'Script ID', 'Scipt Version', 'Script Owner',
                      'Operator', 'Row', 'Column'
@@ -358,14 +358,14 @@ class csv:
 
         # 엑셀 파일을 만드는 코드
         try:
-            with open('count.txt','r') as f: # txt 파일에서 숫자 데이터(돌린 횟수) 읽기
+            with open('src/count.txt','r') as f: # txt 파일에서 숫자 데이터(돌린 횟수) 읽기
                 count = float(f.read())
                 count += 0.1
         except FileNotFoundError: # 처음에 아무 아무 숫자가 없어 생기는 오류 방지
-            with open('count.txt','w') as f:
+            with open('src/count.txt','w') as f:
                 f.write(str(count))
 
-        with open('count.txt','w') as f: # +0.1이 된 횟수를 다시 작성(w는 원래 있던 데이터를 삭제하고 다시 씀)
+        with open('src/count.txt','w') as f: # +0.1이 된 횟수를 다시 작성(w는 원래 있던 데이터를 삭제하고 다시 씀)
             f.write(str(count))
 
         Script_version = np.full((data_len, 1), count)
@@ -375,7 +375,7 @@ class csv:
             np.hstack([Lot, Wafer_name, Mask_name, TestSite, Name, Date, Script_id, Script_version, Script_owner
                           , Operator, row, column, Error_flag, Error_dsc, Analysis_WL, R_max_Ref, Max_TR_ref,
                        R_square_IV, I_n_1V, I_p_1V,V_piL,R_square_TR,n_eff]), columns=self.name)
-        df.to_csv(os.path.join('../res', 'PE02_LMZ_excel_data.csv'), index=False)
+        df.to_csv(os.path.join('res', 'PE02_LMZ_excel_data.csv'), index=False)
         progress_bar.close()
 def csv_prc_exe():
     main_object = csv()

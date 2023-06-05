@@ -1,10 +1,8 @@
 import os
 import shutil
 
-
-
 def delete():
-    res_dir = "../res/"
+    res_dir = "res/"
     print('folder deleted')
 
 
