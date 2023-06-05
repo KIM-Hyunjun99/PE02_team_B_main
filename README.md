@@ -20,9 +20,9 @@ this program stores analyzed Dataframes and graphs and shows xml data customer g
 - Through the measurement data, you can compare and analyze the data of the desired part.
 
 ### -Team members 
-1. Kim Hyunjun - guswns9474@hanyang.ac.kr
-2. Seo Jaeyun - seojy06@hanyang.ac.kr
-3. Lee Jonggeon - dlwhdrjs020801@hanyang.ac.kr
+1. Kim Hyunjun   - guswns9474@hanyang.ac.kr
+2. Seo Jaeyun    - seojy06@hanyang.ac.kr
+3. Lee Jonggeon  - dlwhdrjs020801@hanyang.ac.kr
 4. Jung Myungjin - jmj3034@hanyang.ac.kr
 
 
