@@ -293,7 +293,6 @@ class default_class:
     def fitted_TR_graph_plot(self):
         for bia in self.bias:
             i = self.bias.index(bia)
-            print(self.I)
             plt.plot(self.wave_len[i],self.Intensity[i],alpha=0.7,marker='o',markersize = 0.3, linestyle='none',color=self.colors[i])
             plt.plot(self.wave_len[i],self.fitted_TR_data[i],linewidth=0.8,color=self.colors[i],label=f'{bia}V')
         plt.xlabel('wavelength[nm]',fontdict=self.label_font_properties)
