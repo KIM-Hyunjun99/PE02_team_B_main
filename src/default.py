@@ -292,13 +292,19 @@ class default_class:
 
     def fitted_TR_graph_plot(self):
         for bia in self.bias:
-            plt.plot(self.wave_len[self.bias.index(bia)],self.fitted_TR_data[self.bias.index(bia)],linewidth=0.8,label=f'{bia}V')
+            i = self.bias.index(bia)
+            print(self.I)
+            plt.plot(self.wave_len[i],self.Intensity[i],alpha=0.7,marker='o',markersize = 0.3, linestyle='none',color=self.colors[i])
+            plt.plot(self.wave_len[i],self.fitted_TR_data[i],linewidth=0.8,color=self.colors[i],label=f'{bia}V')
         plt.xlabel('wavelength[nm]',fontdict=self.label_font_properties)
         plt.ylabel('intensity[W]',fontdict=self.label_font_properties)
         plt.xticks(fontsize=6)  # modulate axis label's fontsize
         plt.yticks(fontsize=6)
         plt.title('Fitted Intensity Graph',fontdict=self.title_font_properties)
-        plt.legend(loc='upper right',fontsize=6, ncol=2)
+        legend1 = plt.legend(loc='upper right',fontsize=6, ncol=2)
+        plt.gca().add_artist(legend1)
+        font_props = {'weight': 'bold','size':6}
+        plt.legend(['o : raw data', '-- : fitted graph'], fontsize=5, ncol=1, loc=(0.01, 0.89), handlelength=0,prop=font_props)
         plt.grid()
     def del_n_eff_by_voltage(self):
         plt.plot(self.bias, self.del_n_eff, marker='o',alpha=0.5,markersize=3,color='red',linestyle='none',label='raw data')
@@ -343,18 +349,20 @@ class default:
             for filename in filenames:
                 if '_LMZ' in filename and filename.endswith('.xml'):
                     self.file_paths.append(os.path.join(dirpath, filename))
+        # print(self.file_paths)
 
         def convert_list(file_names):
             converted_list = []
             for file_name in file_names:
-                lot_data = file_name.split('\\')[2]
-                folder_name = file_name.split('\\')[3]
-                timestamp = file_name.split('\\')[4]
+                lot_data = file_name.split('\\')[1]
+                folder_name = file_name.split('\\')[2]
+                timestamp = file_name.split('\\')[3]
                 coordinates = file_name.split('\\')[-1].split('_')[2]
                 converted_list.append((lot_data, folder_name, timestamp, coordinates))
             return converted_list
 
         self.default_list = convert_list(self.file_paths)
+        # print(self.default_list)
     def run_default(self):
         Lot = np.array([])
         Wafer_name = np.array([])
