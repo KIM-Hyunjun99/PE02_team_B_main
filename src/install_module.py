@@ -1,15 +1,17 @@
 import subprocess
+import sys
+
 def install_all_library():
     # pip 설치
-    subprocess.call(['python', '-m', 'ensurepip', '--default-pip'])
-    subprocess.call(['python', '-m', 'pip', 'install', '--upgrade', 'pip'])
+    subprocess.call([sys.executable, '-m', 'ensurepip', '--default-pip'])
+    subprocess.call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip'])
 
     # 필요한 라이브러리 설치
-    subprocess.call(['python', '-m', 'pip', 'install', 'matplotlib'])
-    subprocess.call(['python', '-m', 'pip', 'install', 'numpy'])
-    subprocess.call(['python', '-m', 'pip', 'install', 'lmfit'])
-    subprocess.call(['python', '-m', 'pip', 'install', 'pandas'])
-    subprocess.call(['python', '-m', 'pip', 'install', 'tqdm'])
+    subprocess.call([sys.executable, '-m', 'pip', 'install', 'matplotlib'])
+    subprocess.call([sys.executable, '-m', 'pip', 'install', 'numpy'])
+    subprocess.call([sys.executable, '-m', 'pip', 'install', 'lmfit'])
+    subprocess.call([sys.executable, '-m', 'pip', 'install', 'pandas'])
+    subprocess.call([sys.executable, '-m', 'pip', 'install', 'tqdm'])
 
     # 필요한 라이브러리 설치 확인
     import matplotlib
@@ -24,3 +26,5 @@ def install_all_library():
     print(pandas.__version__)
     print(tqdm.__version__)
     print('install success')
+
+

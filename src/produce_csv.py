@@ -269,9 +269,9 @@ class csv:
         def convert_list(file_names):
             converted_list = []
             for file_name in file_names:
-                lot_data = file_name.split('\\')[2]
-                folder_name = file_name.split('\\')[3]
-                timestamp = file_name.split('\\')[4]
+                lot_data = file_name.split('\\')[1]
+                folder_name = file_name.split('\\')[2]
+                timestamp = file_name.split('\\')[3]
                 coordinates = file_name.split('\\')[-1].split('_')[2]
                 converted_list.append((lot_data, folder_name, timestamp, coordinates))
             return converted_list
