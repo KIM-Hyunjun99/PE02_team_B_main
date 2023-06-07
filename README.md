@@ -129,4 +129,9 @@ GUI.GUI()
 ![CSV3](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/52937c8e-979a-40fd-8a65-9498766bd7d0)
 ![CSV4](https://github.com/PE2-team-B/PE02_team_B_main/assets/128004215/4c314ca8-cfb5-455b-82c1-94c17213faf4)
 
-
+***
+## Precautions
+The criteria by which the error description occurred are as follows
+1. TR_fit_error - Rsq of TR < 0.9
+2. IV_fit_error - Rsq of IV < 0.95
+3. V_piL_error - V_piL < 0
