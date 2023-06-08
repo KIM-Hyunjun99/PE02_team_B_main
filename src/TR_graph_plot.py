@@ -1,7 +1,12 @@
-# 라이브러리 import
-with open('src/library.txt','r') as f:
-    for library in f:
-        exec(library)
+import xml.etree.ElementTree as elemTree
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import datetime
+import os
+from lmfit import Model
+import warnings
+import pandas as pd
+from tkinter import *
 from src import functions as fc
 import math
 from matplotlib.lines import Line2D

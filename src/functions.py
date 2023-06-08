@@ -1,8 +1,14 @@
 # 라이브러리 import
+import xml.etree.ElementTree as elemTree
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import datetime
 import os
-with open('src/library.txt','r') as f:
-    for library in f:
-        exec(library)
+from lmfit import Model
+import warnings
+import pandas as pd
+from tkinter import *
+import math
 from lmfit import Parameters, minimize
 
 def fit_data(X,Y,N):
