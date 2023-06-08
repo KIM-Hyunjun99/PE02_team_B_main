@@ -50,7 +50,7 @@ def shockely_diode_IV_fit_R(V,I):
 
     # 초기 매개 변수 설정
     params = model.make_params(
-        rev_sat_I=1e-7,
+        rev_sat_I=1e-11,
         n=1
     )
 
@@ -85,7 +85,7 @@ def shockely_diode_IV_fit(V,I):
 
     # 초기 매개 변수 설정
     params = model.make_params(
-        rev_sat_I=1e-7,
+        rev_sat_I=1e-11,
         n=1
     )
 
