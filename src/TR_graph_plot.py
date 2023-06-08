@@ -221,7 +221,7 @@ class plot_TR:
         plt.axvline(0, color='black',linestyle='dashed',linewidth=1)  # y축에 대한 수직선
         plt.xticks(fontsize=6)  # modulate axis label's fontsize
         plt.yticks(fontsize=6)
-        plt.text(0.5, 0.8, 'V_piL = {:.8f}'.format(self.V_piL), fontweight = 'bold', fontsize=7,transform=plt.gca().transAxes)
+        plt.text(0.5, 0.8, 'V_piL[V*m] = {:.8f}'.format(self.V_piL), fontweight = 'bold', fontsize=7,transform=plt.gca().transAxes)
         plt.xlabel('voltage[V]', fontdict=self.label_font_properties)
         plt.ylabel(r'$\Delta$'+'n_eff', fontdict=self.label_font_properties)
         plt.title(r'$\Delta$'+'n_eff - Voltage Graph', fontdict=self.title_font_properties)
